@@ -27,7 +27,7 @@
             border: 2px solid #5a0000;
             text-align: center;
             width: 100%;
-            max-width: 380px;
+            max-width: 420px;
         }
         h2 {
             color: #b22222;
@@ -88,6 +88,8 @@
             border-top: 1px dashed #5a1a1a;
             padding-top: 15px;
             text-align: left;
+            max-height: 250px;
+            overflow-y: auto;
         }
         .atalhos-container h4 {
             margin: 0 0 12px 0;
@@ -135,15 +137,31 @@
     </div>
 
     <script>
+        // Mapeamento limpo (chaves em minúsculas, sem acentos e sem pontuação)
         const rotas = {
             "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
             "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
             "o livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" },
-            "livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" }
+            "livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" },
+            "equilibrio": { arquivo: "EQUILIBRIO.pdf", nome: "Documento: Equilíbrio" },
+            "hungaro": { arquivo: "HUNGARO.pdf", nome: "Documento: Húngaro" },
+            "malachim": { arquivo: "MALACHIM.pdf", nome: "Documento: Malachim" },
+            "nefilim": { arquivo: "NEFILIM.pdf", nome: "Documento: Nefilim" },
+            "o caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
+            "caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
+            "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
+            "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" },
+            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" }
         };
 
         function normalizarTexto(texto) {
-            return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+            return texto
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "") // Remove pontuações
+                .replace(/\s{2,}/g, " ") // Padroniza espaços duplos
+                .trim();
         }
 
         function carregarAtalhos() {
