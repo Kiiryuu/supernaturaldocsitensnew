@@ -137,7 +137,7 @@
     </div>
 
     <script>
-        // Mapeamento completo com todos os ficheiros (PDFs e HTMLs)
+        // Mapeamento ajustado sem sobreposição de senhas
         const rotas = {
             "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
             "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
@@ -152,7 +152,7 @@
             "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" },
             "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" },
-            "baralho": { arquivo: "baralho.html", nome: "Baralho (HTML)" } // Novo ficheiro adicionado
+            "baralho": { arquivo: "baralho.html", nome: "Baralho (HTML)" }
         };
 
         function normalizarTexto(texto) {
@@ -160,8 +160,8 @@
                 .toLowerCase()
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-                .replace(/[.,\/\/#!$%\^&\*;:{}=\-_`~()?"']/g, "") // Remove pontuações
-                .replace(/\s{2,}/g, " ") // Padroniza espaços duplos
+                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "") // Remove pontuações
+                .replace(/\s+/g, " ") // Padroniza múltiplos espaços para um único espaço
                 .trim();
         }
 
@@ -180,48 +180,4 @@
                 atalhosSalvos.forEach(senhaKey => {
                     if (rotas[senhaKey]) {
                         const info = rotas[senhaKey];
-                        if (!exibidos.includes(info.nome)) {
-                            exibidos.push(info.nome);
-                            const btn = document.createElement("button");
-                            btn.className = "atalho-btn";
-                            btn.textContent = `📜 ${info.nome}`;
-                            btn.onclick = function() {
-                                window.location.href = info.arquivo;
-                            };
-                            listaAtalhosDiv.appendChild(btn);
-                        }
-                    }
-                });
-            } else {
-                secaoAtalhos.style.display = "none";
-            }
-        }
-
-        function tentarAcessar() {
-            const inputVal = document.getElementById("senhaInput").value;
-            const senhaNormalizada = normalizarTexto(inputVal);
-            const erroDiv = document.getElementById("erro");
-
-            if (rotas[senhaNormalizada]) {
-                let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_desbloqueados")) || [];
-                if (!atalhosSalvos.includes(senhaNormalizada)) {
-                    atalhosSalvos.push(senhaNormalizada);
-                    localStorage.setItem("spn_atalhos_desbloqueados", JSON.stringify(atalhosSalvos));
-                }
-
-                window.location.href = rotas[senhaNormalizada].arquivo;
-            } else {
-                erroDiv.textContent = "Chave incorreta ou desconhecida!";
-            }
-        }
-
-        document.getElementById("senhaInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                tentarAcessar();
-            }
-        });
-
-        window.onload = carregarAtalhos;
-    </script>
-</body>
-</html>
+                        if (!
