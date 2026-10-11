@@ -1,0 +1,197 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>O Baralho do Louco</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#120d1a;--panel:#1d1428;--gold:#d9b45a;--ink:#f1e8d6;--mut:#a99fb8;--bad:#b3475a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:radial-gradient(circle at 50% 0,#2e1c44,#120d1a 70%);background-color:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;min-height:100vh}
+h1{margin:0;font-size:22px;color:var(--gold);letter-spacing:2px}
+header{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:12px 16px;border-bottom:1px solid #3a2a52}
+.st{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.chip{background:var(--panel);border:1px solid #3a2a52;border-radius:20px;padding:4px 12px;font-size:13px}
+.chip b{color:var(--gold)}.chip.off{opacity:.55}
+button{font:inherit;font-size:14px;background:#2b1d3d;color:var(--ink);border:1px solid var(--gold);border-radius:8px;padding:8px 14px;cursor:pointer}
+button:hover:not(:disabled){background:#40295c}button:disabled{opacity:.35;cursor:not-allowed;border-color:#4a3a60}
+button.pri{background:var(--gold);color:#241a10;font-weight:bold}
+.bar{display:flex;flex-wrap:wrap;gap:8px;padding:10px 16px}
+#msg{padding:0 16px;min-height:20px;color:#f0a8b4;font-size:14px}
+.table{display:flex;gap:28px;justify-content:center;padding:14px 16px;flex-wrap:wrap}
+.pile{text-align:center;font-size:13px;color:var(--mut)}
+.slot{width:110px;height:176px;border-radius:10px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;position:relative}
+.back{background:repeating-linear-gradient(45deg,#3b2159 0 8px,#2a1740 8px 16px);border:2px solid var(--gold);box-shadow:3px 3px 0 #0006,6px 6px 0 #0004;font-size:34px;color:var(--gold);background-size:cover;background-position:center}
+.empty{border:2px dashed #4a3a60}
+.main{display:flex;gap:16px;padding:0 16px 16px;align-items:flex-start;flex-wrap:wrap}
+.hand{flex:1 1 560px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;min-height:200px}
+.card{width:210px;min-height:340px;border-radius:12px;background:#f1e8d6;color:#2a1d12;border:3px solid #7a5c1e;padding:8px;display:flex;flex-direction:column;cursor:pointer;transition:transform .15s;font-size:13px;line-height:1.35}
+.card:hover{transform:translateY(-6px)}.card.sel{outline:4px solid var(--gold);transform:translateY(-12px);box-shadow:0 0 22px #d9b45a99}
+.card .hd{display:flex;justify-content:space-between;font-weight:bold;font-size:13px}
+.card .nm{text-align:center;font-weight:bold;font-size:15px;margin:2px 0}
+.art{height:105px;border-radius:6px;margin:4px 0;display:flex;align-items:center;justify-content:center;font-size:44px;color:#fff;background-size:cover;background-position:center;text-shadow:0 2px 6px #000a;position:relative;overflow:hidden}
+.art small{position:absolute;bottom:2px;right:6px;font-size:12px}
+.k{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#7a5c1e;margin-bottom:3px}
+.x{margin-top:5px;padding-top:4px;border-top:1px solid #c9b88f}.x b{color:#7a2a38}
+.react{color:#fff;background:#7a2a38;border-radius:4px;padding:0 5px;font-size:11px}
+.M .art{background-color:#3b2159}.paus .art{background-color:#b8501e}.copas .art{background-color:#2c5f8f}.espadas .art{background-color:#5b6b78}.ouros .art{background-color:#8a6d1c}
+#reader{flex:0 1 330px;position:sticky;top:8px}
+#reader .card{width:100%;font-size:15px;min-height:0;cursor:default}#reader .card:hover{transform:none}#reader .art{height:150px}
+#reader p{color:var(--mut);font-size:13px}
+#log{margin:0 16px 20px;max-height:140px;overflow:auto;font-size:13px;color:var(--mut);border-top:1px solid #3a2a52;padding-top:8px}
+#ov{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:9;padding:16px;flex-direction:column;gap:12px;overflow:auto}
+#ov .card{width:min(340px,92vw);font-size:15px;cursor:default}
+details{padding:0 16px 10px;color:var(--mut);font-size:12px}
+@media(max-width:600px){#reader{position:static;flex-basis:100%}.card{width:calc(50% - 8px);min-width:160px}}
+</style><style>
+body{display:flex;flex-direction:column;height:100dvh;overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#2b6b57 0,#14392f 45%,#08150f 85%);background-color:#08150f}
+header{order:0;padding:8px 16px}header+.bar{order:1;padding:6px 16px}details{order:2;padding:0 16px 4px}#msg{order:3;position:fixed;left:50%;top:108px;transform:translateX(-50%);z-index:30;background:#3a1020ee;border:1px solid #b3475a;border-radius:8px;padding:6px 14px;min-height:0}#msg:empty{display:none}
+.table{order:4;flex:1;min-height:0;position:relative;perspective:1100px;gap:110px;align-items:center;padding:0}
+.table:before{content:'';position:absolute;width:min(70vh,520px);height:min(70vh,520px);border:2px dashed #d9b45a66;border-radius:50%;box-shadow:inset 0 0 60px #d9b45a22,0 0 40px #d9b45a22;transform:rotateX(62deg);animation:spin 70s linear infinite}
+@keyframes spin{to{transform:rotateX(62deg) rotate(360deg)}}
+.table+.bar{order:5;justify-content:center;padding:6px 16px;position:relative;z-index:12}
+.main{order:6;display:block;padding:0}
+#log{order:7;position:fixed;left:12px;top:108px;width:250px;max-height:200px;margin:0;background:#0009;border:1px solid #3a2a52;border-radius:10px;padding:8px;z-index:6}
+.pile{transform:rotateX(40deg);transform-style:preserve-3d;position:relative}
+.slot{width:130px;height:208px}
+.back{box-shadow:1px 1px 0 #1b0e2b,2px 2px 0 #3b2159,3px 3px 0 #1b0e2b,4px 4px 0 #3b2159,5px 5px 0 #1b0e2b,6px 6px 0 #3b2159,8px 8px 0 #1b0e2b,16px 24px 34px #000c;cursor:pointer;transition:transform .2s}.back:hover{transform:translateZ(30px) translateY(-6px)}
+#pileX{box-shadow:12px 20px 30px #0008}#pileX>div{width:200px;flex:none;transform:scale(.65)!important}
+.hand{flex:none;flex-wrap:nowrap;justify-content:center;align-items:flex-end;padding:44px 10px 0;min-height:250px;perspective:1000px;overflow:visible}
+.card{--r:0deg;--y:0px;--rx:0deg;--ry:0deg;--z:1;z-index:var(--z);width:200px;min-height:300px;margin:0 -22px;background:linear-gradient(160deg,#f8efd9,#e4d2a8);font-size:12.5px;transform:perspective(900px) translateY(var(--y)) rotate(var(--r)) rotateX(var(--rx)) rotateY(var(--ry));transform-origin:50% 130%;transition:transform .18s,box-shadow .2s;box-shadow:0 14px 30px #000a}
+.card:hover{z-index:40;transform:perspective(900px) translateY(-85px) scale(1.18) rotateX(var(--rx)) rotateY(var(--ry));box-shadow:0 30px 50px #000c}
+.card.sel{z-index:35;transform:perspective(900px) translateY(-100px) scale(1.12) rotateX(var(--rx)) rotateY(var(--ry));box-shadow:0 0 30px #d9b45a,0 30px 50px #000c}
+.card.new{animation:deal .6s cubic-bezier(.2,.8,.3,1)}
+@keyframes deal{from{opacity:0;transform:perspective(900px) translate(-35vw,-60vh) rotate(-40deg) scale(.3)}}
+#reader{position:fixed;right:14px;top:108px;width:300px;max-height:calc(100dvh - 130px);overflow:auto;z-index:20;flex:none}#reader .card{margin:0;width:100%;transform:none!important;animation:none}
+@media(max-width:800px){body{height:auto;overflow:auto}.table{min-height:300px;gap:40px}.hand{flex-wrap:wrap;padding-top:10px}.card{margin:6px;width:calc(50% - 12px);transform:none}.card:hover,.card.sel{transform:scale(1.03)}#reader,#log{position:static;width:auto;max-height:none}#msg{top:60px}}
+</style></head><body>
+<header><h1>🃏 O BARALHO DO LOUCO</h1>
+<div class="st"><span class="chip">Turno <b id="sT">–</b></span><span class="chip">PA gastos <b id="sP">0</b></span><span class="chip" id="cM">Ação Principal: <b id="sM">livre</b></span><span class="chip" id="cJ">Arcano Maior: <b id="sJ">livre</b></span><span class="chip">Mão <b id="sH">0</b>/5</span></div></header>
+<div class="bar">
+<button class="pri" id="bStart">⚔ Iniciar combate (comprar 3)</button>
+<button id="bDraw">🂠 Comprar carta (saque do turno)</button>
+<button id="bUndo" disabled>↩ Voltar ação</button>
+<button id="bEnd">⏭ Encerrar turno</button>
+<button id="bFs">⛶ Tela cheia</button>
+<button id="bShuf">🔀 Reembaralhar descarte</button>
+<label><button onclick="this.nextElementSibling.click()">🖼 Carregar imagens</button><input type="file" id="fi" accept="image/*" multiple hidden></label>
+</div>
+<details><summary>Como colocar as imagens</summary>Selecione várias imagens de uma vez. O nome do arquivo deve ser o código da carta (ex.: <code>louco.jpg</code>, <code>mago.png</code>, <code>sacerdotisa</code>, <code>imperatriz</code>, <code>imperador</code>, <code>amantes</code>, <code>carroca</code>, <code>morte</code>, <code>diabo</code>, <code>torre</code>, <code>as-paus</code>, <code>3-paus</code>, <code>5-paus</code>, <code>7-paus</code>, <code>10-paus</code>, <code>as-copas</code>, <code>2-copas</code>, <code>4-copas</code>, <code>6-copas</code>, <code>rainha-copas</code>, <code>as-espadas</code>, <code>3-espadas</code>, <code>5-espadas</code>, <code>8-espadas</code>, <code>rei-espadas</code>, <code>as-ouros</code>, <code>4-ouros</code>, <code>6-ouros</code>, <code>8-ouros</code>, <code>cavaleiro-ouros</code>). Para o verso do baralho use <code>verso</code>. As imagens ficam só na memória desta página (somem ao recarregar).</details>
+<div id="msg"></div>
+<div class="table">
+<div class="pile"><div class="slot back" id="pileD">🂠</div>Compra: <b id="nP">0</b></div>
+<div class="pile"><div class="slot empty" id="pileX"></div>Descarte: <b id="nD">0</b></div>
+</div>
+<div class="bar" style="justify-content:center">
+<button class="pri" id="bPlay">✨ Jogar carta selecionada</button>
+<button id="bDisc">🗑 Descartar</button>
+<button id="bSac">🩸 Sacrificar Arcano Maior (+2 Menores)</button>
+<button id="bRec">♻ Trocar 2 Menores por 1 Maior</button>
+</div>
+<div class="main"><div class="hand" id="hand"></div>
+<aside id="reader"></aside></div>
+<div id="log"></div>
+<div id="ov"><div id="ovc"></div><button class="pri" onclick="$('ov').style.display='none'">Fechar</button></div>
+<script>
+const $=id=>document.getElementById(id);
+const SU={paus:['🪵','Paus'],copas:['🍷','Copas'],espadas:['⚔️','Espadas'],ouros:['🪙','Ouros']};
+const C=[
+{s:'louco',t:'M',n:'0',nm:'O Louco',en:'The Fool',k:'Efeito Global / Caos',e:'Jogue um dado. Se o resultado for Par, um aliado à sua escolha ganha um sucesso automático em sua próxima ação. Se for Ímpar, o próximo ataque de um inimigo contra o seu grupo falha bizarramente.',x:[['Preço','O portador da carta fica desorientado e não pode usar Reações até o seu próximo turno.']],i:'🤡'},
+{s:'mago',t:'M',n:'I',nm:'O Mago',en:'The Magician',k:'Ataque / Canalização',e:'Você manifesta energia elemental bruta. Escolha um alvo e role 2d6 + Mente como Dano de qualquer material de sua escolha.',x:[['Preço','Gasta 1 ponto de Estresse para ser conjurada.']],i:'🔮'},
+{s:'sacerdotisa',t:'M',n:'II',nm:'A Sacerdotisa',en:'The High Priestess',k:'Suporte / Revelação',e:'Cure alguém de sua escolha, exceto você mesmo, com 2d4 + Fôlego + Mente.',x:[],i:'🌙'},
+{s:'imperatriz',t:'M',n:'III',nm:'A Imperatriz',en:'The Empress',k:'Defesa / Suporte',e:'Cria uma barreira de vinhas e raízes mágicas ao redor de um aliado. Em 360° ele está protegido de ataques físicos.',x:[['Duração','1d4 + Determinação (turnos). Pode ser desfeito à sua escolha.']],i:'🌿'},
+{s:'imperador',t:'M',n:'IV',nm:'O Imperador',en:'The Emperor',k:'Controle de Grupo',e:'Você emana uma aura de comando absoluto. Todos os inimigos menores na sua linha de visão devem fazer um teste de resistência mental. Se falharem, ficam Aterrorizados ou Atordoados por 1 turno, incapazes de avançar contra você.',x:[],i:'👑'},
+{s:'amantes',t:'M',n:'VI',nm:'Os Amantes',en:'The Lovers',k:'Reação / Suporte',r:1,e:'Jogue esta carta quando um aliado for sofrer dano. Você divide o dano igualmente entre aquele aliado e outro jogador voluntário, criando um elo místico protetor entre os dois.',x:[['Duração','É desfeito à sua escolha.']],i:'💞'},
+{s:'carroca',t:'M',n:'VII',nm:'A Carroça',en:'The Chariot',k:'Utilidade / Movimento',e:'Garante o dobro de velocidade de movimento para todo o grupo neste turno. Além disso, permite que um aliado desengaje de um combate corpo a corpo sem provocar ataques de oportunidade dos monstros.',x:[],i:'🛞'},
+{s:'morte',t:'M',n:'XIII',nm:'A Morte',en:'Death',k:'Ataque / Finalizador',e:'Corte Negro. Causa 3d6 + Mente de dano direto na vida de um inimigo próximo. Se o inimigo morrer por este ataque, você recupera imediatamente metade dos pontos de vida de volta para si.',x:[],i:'💀'},
+{s:'diabo',t:'M',n:'XV',nm:'O Diabo',en:'The Devil',k:'Barganha Perigosa',e:'Você faz um pacto momentâneo. Escolha um aliado: ele recebe um bônus de +5 em todos os testes por 3 turnos.',x:[['Preço','Quando o efeito acaba, o alvo cai exausto, sofrendo a condição Fraqueza e recebendo 2d4 + Dor (do usuário) de Estresse. O ser afetado não pode morrer. Se sua vida chegar a zero, ele retorna com 1 ponto de vida, porém precisa ser curado para voltar à ativa.']],i:'😈'},
+{s:'torre',t:'M',n:'XVI',nm:'A Torre',en:'The Tower',k:'Destruição / Caos no Cenário',e:'O chão treme e estruturas ao redor desabam. Causa 2d8 + Dor de dano físico em área (atingindo inimigos e aliados que estiverem muito perto do epicentro). Destrói coberturas, portas frágeis ou paredes frágeis.',x:[],i:'⚡'},
+{s:'as-paus',t:'m',su:'paus',n:'Ás',nm:'Ás de Paus',sub:'Centelha Inicial',e:'Seu próximo ataque físico ou disparo de arma neste turno incendeia o alvo, causando +1d4 de dano de fogo por rodada (Duração: 3 turnos).'},
+{s:'3-paus',t:'m',su:'paus',n:'3',nm:'3 de Paus',sub:'Olhar Avançado',e:'O personagem ganha +2 em Iniciativa ou pode avançar o dobro do deslocamento padrão neste turno sem gerar ataques de oportunidade.'},
+{s:'5-paus',t:'m',su:'paus',n:'5',nm:'5 de Paus',sub:'Confronto Caótico',e:'Use quando estiver cercado por 2 ou mais inimigos. Você faz um ataque giratório rápido que empurra todos os alvos adjacentes a 3 metros de distância.'},
+{s:'7-paus',t:'m',su:'paus',n:'7',nm:'7 de Paus',sub:'Resistência de Posição',e:'Você se finca no chão. Até o início do seu próximo turno, você não pode ser movido, derrubado ou arremessado por nenhuma criatura.'},
+{s:'10-paus',t:'m',su:'paus',n:'10',nm:'Dez de Paus',sub:'Sobrecarga',e:'Você gasta toda a sua energia restante. Seu ataque atual causa o dobro de dano, mas você fica com a condição Exausto no próximo turno (perde a ação principal).'},
+{s:'as-copas',t:'m',su:'copas',n:'Ás',nm:'Ás de Copas',sub:'Fonte de Alívio',e:'Cura imediata de 1d6 + Mente em um aliado que você consiga tocar.'},
+{s:'2-copas',t:'m',su:'copas',n:'2',nm:'2 de Copas',sub:'Elo de Empatia',e:'Escolha dois aliados. Sempre que um deles receber cura nos próximos 3 turnos, o outro recebe metade do valor curado automaticamente.'},
+{s:'4-copas',t:'m',su:'copas',n:'4',nm:'4 de Copas',sub:'Anestesia Mental',e:'Remove imediatamente qualquer efeito de medo, pânico ou controle mental de um aliado. Alivia 2 pontos de Estresse.'},
+{s:'6-copas',t:'m',su:'copas',n:'6',nm:'6 de Copas',sub:'Memórias Confortantes',e:'O alvo lembra de um momento pacífico do seu passado. Ele recupera metade dos seus pontos de estresse máximos.'},
+{s:'rainha-copas',t:'m',su:'copas',n:'Q',nm:'Rainha de Copas',sub:'Santuário Fluido',e:'Cria uma névoa mágica ao redor do grupo (6m, sendo você o centro). Inimigos atacam com desvantagem contra vocês devido à falta de visibilidade, e todos os aliados dentro da névoa curam 2 de vida por turno.'},
+{s:'as-espadas',t:'m',su:'espadas',n:'Ás',nm:'Ás de Espadas',sub:'Gume Afiado',e:'Usada como Ação Rápida na sua arma. O próximo ataque desferido com ela ignora completamente a blindagem física ou resistência a dano do monstro.'},
+{s:'3-espadas',t:'m',su:'espadas',n:'3',nm:'3 de Espadas',sub:'Corte de Sangramento',e:'Causa a condição Sangramento no alvo. O inimigo perde vida progressivamente a cada turno até gastar uma ação médica para estancar.'},
+{s:'5-espadas',t:'m',su:'espadas',n:'5',nm:'5 de Espadas',sub:'Contra-Ataque de Vento',r:1,e:'[REAÇÃO] Jogue quando um inimigo errar um ataque corpo a corpo contra você. Você imediatamente realiza um ataque físico gratuito contra ele.'},
+{s:'8-espadas',t:'m',su:'espadas',n:'8',nm:'8 de Espadas',sub:'Prisão de Lâminas',e:'Espadas espirituais cercam o inimigo. Se ele tentar se mover do lugar no próximo turno, sofre 2d6 de dano de corte automático.'},
+{s:'rei-espadas',t:'m',su:'espadas',n:'K',nm:'Rei de Espadas',sub:'Carrasco',e:'Se você atacar um inimigo que já esteja machucado (com menos da metade da vida), esse ataque se torna um Crítico Automático.'},
+{s:'as-ouros',t:'m',su:'ouros',n:'Ás',nm:'Ás de Ouros',sub:'Pele de Pedra',e:'Você ou um aliado ganha +5 de proteção temporária até o início do seu próximo turno.'},
+{s:'4-ouros',t:'m',su:'ouros',n:'4',nm:'4 de Ouros',sub:'Avareza / Escudo de Recursos',e:'Você canaliza sua energia material. O próximo ataque que você sofrer não causa dano à sua vida, mas consome seus recursos materiais ou itens descartáveis.'},
+{s:'6-ouros',t:'m',su:'ouros',n:'6',nm:'6 de Ouros',sub:'Partilha de Vigor',e:'Você doa parte de sua estabilidade. Transfira até 10 pontos de vida atuais seus para um aliado, transformando esses pontos em pontos de vida Temporários para ele.'},
+{s:'8-ouros',t:'m',su:'ouros',n:'8',nm:'8 de Ouros',sub:'Runas de Proteção',e:'Inscreve um símbolo de proteção em uma porta. Esta porta permanecerá trancada pela próxima 1 hora; apenas uma criatura sobrenatural maior pode abri-la.'},
+{s:'cavaleiro-ouros',t:'m',su:'ouros',n:'Cav.',nm:'Cavaleiro de Ouros',sub:'Bastião Inabalável',r:1,e:'[REAÇÃO] Jogue quando um aliado for sofrer um ataque letal. Você se joga na frente, absorve todo o dano no lugar dele e reduz esse dano pela metade usando seu atributo de Fôlego.'}
+];
+const S={pile:[],disc:[],hand:[],sel:[],turn:0,pa:0,main:false,maj:false,drew:false,played:false,on:false,view:null};
+const imgs={};
+const cost=c=>c.r?0:(c.t=='M'?2:1);
+const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const msg=t=>$('msg').textContent=t||'';
+const log=t=>{const d=document.createElement('div');d.textContent='• '+t;$('log').prepend(d)};
+const sel=()=>S.hand.filter(c=>S.sel.includes(c.s));
+function take(n,f){let g=0;while(g<n&&S.hand.length<5){const i=S.pile.findIndex(f||(()=>true));if(i<0)break;S.hand.push(S.pile.splice(i,1)[0]);g++}return g}
+function cardHTML(c,id){
+ const cls=c.t=='M'?'M':c.su;const img=imgs[c.s]?`style="background-image:url(${imgs[c.s]})"`:'';
+ const sym=c.t=='M'?c.i:SU[c.su][0];
+ return `<div class="card ${cls}${id&&S.sel.includes(c.s)?' sel':''}" ${id?`data-s="${c.s}"`:''}>
+ <div class="hd"><span>${c.n}</span><span>${c.t=='M'?'Arcano Maior':'Arcano Menor · '+SU[c.su][1]}</span></div>
+ <div class="art" ${img}>${imgs[c.s]?'':sym}<small>${c.t=='M'?(c.r?'Reação':'2 PA'):(c.r?'Reação':'1 PA')}</small></div>
+ <div class="nm">${c.nm}${c.sub?`<div style="font-weight:normal;font-style:italic;font-size:12px">${c.sub}</div>`:`<div style="font-weight:normal;font-style:italic;font-size:12px">${c.en}</div>`}</div>
+ ${c.k?`<div class="k">${c.k}${c.r?' <span class="react">REAÇÃO</span>':''}</div>`:(c.r?'<div class="k"><span class="react">REAÇÃO</span></div>':'')}
+ <div><b>Efeito:</b> ${c.e}</div>${(c.x||[]).map(x=>`<div class="x"><b>${x[0]}:</b> ${x[1]}</div>`).join('')}</div>`;
+}
+function render(){
+ $('sT').textContent=S.on?S.turn:'–';$('sP').textContent=S.pa;$('sH').textContent=S.hand.length;
+ $('sM').textContent=S.main?'usada':'livre';$('cM').classList.toggle('off',S.main);
+ $('sJ').textContent=S.maj?'já usado':'livre';$('cJ').classList.toggle('off',S.maj);
+ $('nP').textContent=S.pile.length;$('nD').textContent=S.disc.length;
+ const bk=imgs.verso?`background-image:url(${imgs.verso})`:'';$('pileD').style.cssText=bk;$('pileD').textContent=imgs.verso?'':'🂠';
+ $('pileD').style.visibility=S.pile.length?'visible':'hidden';
+ const top=S.disc[S.disc.length-1];$('pileX').innerHTML=top?`<div style="transform:scale(.52);transform-origin:center">${cardHTML(top)}</div>`:'';
+ $('pileX').style.overflow='hidden';
+ $('hand').innerHTML=S.hand.length?S.hand.map(c=>cardHTML(c,1)).join(''):`<p style="color:var(--mut)">${S.on?'Sua mão está vazia.':'Clique em “Iniciar combate” para comprar sua mão inicial.'}</p>`;
+ document.querySelectorAll('#hand .card').forEach(el=>el.onclick=()=>{const s=el.dataset.s;S.sel=S.sel.includes(s)?S.sel.filter(x=>x!=s):[...S.sel,s];S.view=S.hand.find(c=>c.s==s);msg();render()});
+ document.querySelectorAll('#hand .card').forEach(fan);const v=S.view&&S.hand.includes(S.view)?S.view:null;
+ $('reader').innerHTML=v?cardHTML(v):'<p>👁 Clique em uma carta da mão para lê-la em tamanho grande aqui. Cartas selecionadas ficam com borda dourada.</p>';
+ const ss=sel();const one=ss.length==1?ss[0]:null;
+ $('bDraw').disabled=!S.on||S.drew||S.hand.length>=5||!S.pile.length;
+ $('bEnd').disabled=!S.on;$('bShuf').disabled=S.pile.length>0||!S.disc.length;
+ $('bPlay').disabled=!S.on||!one;$('bDisc').disabled=!ss.length;
+ $('bSac').disabled=!S.on||!one||one.t!='M'||S.played;
+ $('bRec').disabled=!S.on||!(ss.length==2&&ss.every(c=>c.t=='m'));
+}
+function out(cs){S.hand=S.hand.filter(h=>!cs.includes(h));S.sel=[];S.disc.push(...cs)}
+$('bStart').onclick=()=>{S.pile=sh(C.slice());S.disc=[];S.hand=[];S.sel=[];S.turn=1;S.pa=0;S.main=S.maj=S.drew=S.played=false;S.on=true;S.view=null;take(3);$('log').innerHTML='';msg();log('Combate iniciado: 3 cartas compradas do topo do deck.');render()};
+$('bDraw').onclick=()=>{take(1);S.drew=true;const c=S.hand[S.hand.length-1];S.view=c;log('Saque do turno: '+c.nm+'.');render()};
+$('bEnd').onclick=()=>{S.turn++;S.pa=0;S.main=S.maj=S.drew=S.played=false;msg();log('— Turno '+S.turn+' —');render()};
+$('bShuf').onclick=()=>{S.pile=sh(S.disc);S.disc=[];log('Cemitério reembaralhado no deck.');render()};
+$('bDisc').onclick=()=>{const cs=sel();out(cs);log('Descartou: '+cs.map(c=>c.nm).join(', ')+'.');render()};
+$('bPlay').onclick=()=>{const c=sel()[0];
+ if(c.t=='M'&&!c.r){if(S.maj)return msg('Só 1 Arcano Maior pode ser ativado por turno.');if(S.main)return msg('Arcano Maior exige a Ação Principal, e ela já foi usada neste turno.')}
+ if(c.t=='M'&&!c.r){S.maj=true;S.main=true}
+ S.pa+=cost(c);S.played=true;out([c]);S.view=null;msg();
+ log('Ativou '+c.nm+' ('+cost(c)+' PA'+(c.r?', Reação':'')+').');
+ $('ovc').innerHTML=cardHTML(c);$('ov').style.display='flex';render()};
+$('bSac').onclick=()=>{const c=sel()[0];out([c]);const g=take(2,x=>x.t=='m');log('Sacrificou '+c.nm+' e comprou '+g+' Arcano(s) Menor(es).');msg(g<2?'Não foi possível comprar 2 (limite da mão ou deck sem Menores).':'');render()};
+$('bRec').onclick=()=>{const cs=sel();out(cs);const g=take(1,x=>x.t=='M');log('Descartou '+cs.map(c=>c.nm).join(' e ')+' e comprou '+g+' Arcano Maior.');msg(g?'':'Não há Arcano Maior no deck.');render()};
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\.[a-z0-9]+$/,'').replace(/[\s_]+/g,'-');
+$('fi').onchange=e=>{let n=0;[...e.target.files].forEach(f=>{const k=norm(f.name);const ok=k=='verso'||C.some(c=>c.s==k);if(!ok){log('Imagem sem carta correspondente: '+f.name);return}
+ const r=new FileReader();r.onload=()=>{imgs[k]=r.result;render()};r.readAsDataURL(f);n++});log(n+' imagem(ns) carregada(s).')};
+let prev=new Set();
+function fan(el,i,a){const m=(a.length-1)/2,st=el.style;st.setProperty('--r',(i-m)*5+'deg');st.setProperty('--y',Math.pow(i-m,2)*7+'px');st.setProperty('--z',i+1);
+ el.onmousemove=e=>{const b=el.getBoundingClientRect(),x=(e.clientX-b.left)/b.width-.5,y=(e.clientY-b.top)/b.height-.5;st.setProperty('--ry',x*20+'deg');st.setProperty('--rx',-y*20+'deg')};
+ el.onmouseleave=()=>{st.setProperty('--rx','0deg');st.setProperty('--ry','0deg')};
+ if(!prev.has(el.dataset.s))el.classList.add('new');
+ if(i==a.length-1)prev=new Set([...a].map(e=>e.dataset.s))}
+const byS=Object.fromEntries(C.map(c=>[c.s,c]));
+const snap=()=>JSON.stringify({p:S.pile.map(c=>c.s),d:S.disc.map(c=>c.s),h:S.hand.map(c=>c.s),turn:S.turn,pa:S.pa,main:S.main,maj:S.maj,drew:S.drew,played:S.played});
+const H=[];
+['bDraw','bEnd','bShuf','bDisc','bPlay','bSac','bRec'].forEach(id=>{const f=$(id).onclick;$(id).onclick=()=>{const b=snap();f();if(snap()!==b)H.push(b);render()}});
+const fs0=$('bStart').onclick;$('bStart').onclick=()=>{fs0();H.length=0;render()};
+$('bUndo').onclick=()=>{if(!H.length)return;const o=JSON.parse(H.pop());S.pile=o.p.map(k=>byS[k]);S.disc=o.d.map(k=>byS[k]);S.hand=o.h.map(k=>byS[k]);S.turn=o.turn;S.pa=o.pa;S.main=o.main;S.maj=o.maj;S.drew=o.drew;S.played=o.played;S.sel=[];S.view=null;$('ov').style.display='none';msg();log('↩ Última ação desfeita.');render()};
+const r0=render;render=function(){r0();$('bUndo').disabled=!H.length};
+$('pileD').onclick=()=>$('bDraw').click();
+$('bFs').onclick=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>msg('Tela cheia indisponível neste navegador.'))};
+render();
+</script></body></html>
