@@ -137,6 +137,7 @@
     </div>
 
     <script>
+        // Mapeamento estritamente separado das rotas
         const rotas = {
             "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
             "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
@@ -149,9 +150,9 @@
             "o caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
             "caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
             "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
-            "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" },
-            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" },
-            "caixa": { arquivo: "baralho.html", nome: "Baralho (HTML)" } // Senha alterada para "caixa"
+            "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
+            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
+            "caixa": { arquivo: "baralho.html", nome: "Caixa de Baralho" }
         };
 
         function normalizarTexto(texto) {
@@ -169,7 +170,8 @@
             const secaoAtalhos = document.getElementById("secaoAtalhos");
             listaAtalhosDiv.innerHTML = "";
 
-            let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_desbloqueados")) || [];
+            // Atualizado o nome da chave no localStorage para resetar histórico antigo
+            let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
 
             if (atalhosSalvos.length > 0) {
                 secaoAtalhos.style.display = "block";
@@ -202,10 +204,10 @@
             const erroDiv = document.getElementById("erro");
 
             if (rotas[senhaNormalizada]) {
-                let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_desbloqueados")) || [];
+                let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
                 if (!atalhosSalvos.includes(senhaNormalizada)) {
                     atalhosSalvos.push(senhaNormalizada);
-                    localStorage.setItem("spn_atalhos_desbloqueados", JSON.stringify(atalhosSalvos));
+                    localStorage.setItem("spn_atalhos_v2", JSON.stringify(atalhosSalvos));
                 }
 
                 window.location.href = rotas[senhaNormalizada].arquivo;
