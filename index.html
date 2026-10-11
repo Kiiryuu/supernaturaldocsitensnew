@@ -137,7 +137,7 @@
     </div>
 
     <script>
-        // Mapeamento limpo (chaves em minúsculas, sem acentos e sem pontuação)
+        // Mapeamento completo com todos os ficheiros (PDFs e HTMLs)
         const rotas = {
             "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
             "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
@@ -151,7 +151,8 @@
             "caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
             "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" },
-            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" }
+            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco (HTML)" },
+            "baralho": { arquivo: "baralho.html", nome: "Baralho (HTML)" } // Novo ficheiro adicionado
         };
 
         function normalizarTexto(texto) {
@@ -159,7 +160,7 @@
                 .toLowerCase()
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "") // Remove pontuações
+                .replace(/[.,\/\/#!$%\^&\*;:{}=\-_`~()?"']/g, "") // Remove pontuações
                 .replace(/\s{2,}/g, " ") // Padroniza espaços duplos
                 .trim();
         }
