@@ -137,7 +137,7 @@
     </div>
 
     <script>
-        // Mapeamento estritamente separado das rotas
+        // Mapeamento completo com todos os ficheiros (PDFs e HTMLs)
         const rotas = {
             "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
             "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
@@ -152,7 +152,15 @@
             "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
             "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
-            "caixa": { arquivo: "caixa.html", nome: "Caixa" }
+            "caixa": { arquivo: "baralho.html", nome: "Caixa de Baralho" },
+            
+            // Novos ficheiros adicionados
+            "tubo de ensaio": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },
+            "tubo": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },
+            "gs planta": { arquivo: "GS PLANTA.html", nome: "GS Planta" },
+            "planta": { arquivo: "GS PLANTA.html", nome: "GS Planta" },
+            "po de fantasma": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
+            "materiais": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" }
         };
 
         function normalizarTexto(texto) {
@@ -170,7 +178,6 @@
             const secaoAtalhos = document.getElementById("secaoAtalhos");
             listaAtalhosDiv.innerHTML = "";
 
-            // Atualizado o nome da chave no localStorage para resetar histórico antigo
             let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
 
             if (atalhosSalvos.length > 0) {
