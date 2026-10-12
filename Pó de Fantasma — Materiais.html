@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Pó de Fantasma — Materiais</title>
+<link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--ink:#2a1507;--bg:#0c0612}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at 50% 30%,#3b2418 0,#1a0d09 55%,#080307 100%);background-color:var(--bg);font-family:Georgia,serif;perspective:1200px;overflow-x:hidden}
+.paper{position:relative;width:min(440px,100%);padding:44px 38px 52px;color:var(--ink);transform:rotate(-1.2deg) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .15s;
+ background:radial-gradient(ellipse at 20% 15%,rgba(255,240,200,.55),transparent 55%),radial-gradient(ellipse at 85% 90%,rgba(120,70,20,.35),transparent 50%),linear-gradient(100deg,#d6bb82,#e9d8a6 35%,#e2cd97 65%,#c9a86a);
+ clip-path:polygon(0 1.5%,6% 0,14% 1%,23% .2%,34% 1.2%,46% 0,58% .8%,70% .1%,82% 1.1%,93% 0,100% 1.4%,99% 12%,100% 25%,99.2% 40%,100% 55%,99% 70%,100% 84%,98.8% 100%,90% 99%,80% 100%,68% 99%,55% 100%,42% 98.8%,30% 100%,18% 99.2%,8% 100%,0 98.6%,1% 85%,0 70%,1% 54%,0 40%,1% 26%,0 12%);
+ filter:drop-shadow(0 22px 28px #000c)}
+.paper:before{content:'';position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.55;
+ background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/><feColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .08 0 0 0 .9 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>")}
+.paper:after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 70px 14px rgba(70,30,5,.55),inset 0 0 18px rgba(40,15,0,.5)}
+.stain{position:absolute;right:36px;bottom:60px;width:90px;height:90px;border-radius:50%;border:6px solid rgba(100,60,20,.14);box-shadow:inset 0 0 12px rgba(100,60,20,.1);pointer-events:none}
+h1{margin:0;text-align:center;font-family:'Homemade Apple',cursive,Georgia,serif;font-weight:normal;font-size:27px;line-height:1.3;transform:rotate(-1deg);text-shadow:0 0 2px rgba(42,21,7,.5)}
+.sub{text-align:center;font-size:13px;letter-spacing:4px;text-transform:uppercase;color:#6b4220;margin:8px 0 6px}
+.rule{height:10px;margin:8px 0 18px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='10'><path d='M0 5 Q12 0 25 5 T50 5 T75 5 T100 5 T125 5 T150 5 T175 5 T200 5' stroke='%232a1507' stroke-opacity='.7' fill='none' stroke-width='1.6'/></svg>") center/200px 10px repeat-x}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;align-items:center;gap:16px;padding:10px 4px;font-family:'Homemade Apple',cursive,Georgia,serif;font-size:21px;cursor:pointer;user-select:none;text-shadow:0 0 2px rgba(42,21,7,.45)}
+li:nth-child(odd){transform:rotate(.6deg)}li:nth-child(even){transform:rotate(-.7deg) translateX(4px)}
+.box{flex:none;width:24px;height:24px;border:2.5px solid var(--ink);border-radius:3px 6px 4px 7px;position:relative;opacity:.85}
+.box:after{content:'';position:absolute;left:3px;top:-9px;width:12px;height:22px;border:solid var(--ink);border-width:0 4px 4px 0;transform:rotate(40deg) scale(0);transition:transform .2s;transform-origin:bottom}
+li.done .box:after{transform:rotate(40deg) scale(1)}
+li.done span{text-decoration:line-through;text-decoration-thickness:2px;opacity:.55}
+.foot{margin-top:18px;text-align:center;font-size:12px;color:#7a5530;font-style:italic}
+body{overflow:hidden}li{font-size:19px}li span{flex:1}.q{flex:none;font-weight:normal;font-size:19px;color:#7a2a10;transform:rotate(-2deg);white-space:nowrap}.paper{transform:rotate(-1.2deg) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(var(--z,1))}
+</style></head><body>
+<div class="paper" id="p"><div class="stain"></div>
+<h1>Pó de Fantasma</h1><div class="sub">Materiais</div><div class="rule"></div>
+<ul>
+<li><i class="box"></i><span>Sal grosso moído</span><b class="q">100g</b></li>
+<li><i class="box"></i><span>Enxofre em pó</span><b class="q">50g</b></li>
+<li><i class="box"></i><span>Cinzas de ossos humanos</span><b class="q">200g</b></li>
+<li><i class="box"></i><span>Pétalas de violeta</span><b class="q">5 un.</b></li>
+</ul>
+<div class="foot">role para dar zoom · toque num item para riscá-lo</div></div>
+<script>
+const p=document.getElementById('p');
+document.querySelectorAll('li').forEach(l=>l.onclick=()=>l.classList.toggle('done'));
+let z=1;const setZ=v=>{z=Math.max(.5,Math.min(3,v));p.style.setProperty('--z',z)};
+addEventListener('wheel',e=>{e.preventDefault();setZ(z*Math.exp(-e.deltaY*.0015))},{passive:false});
+let pd=0;const dist=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+addEventListener('touchstart',e=>{if(e.touches.length==2)pd=dist(e.touches)},{passive:true});
+addEventListener('touchmove',e=>{if(e.touches.length==2){e.preventDefault();const d=dist(e.touches);setZ(z*d/pd);pd=d}},{passive:false});
+document.addEventListener('mousemove',e=>{p.style.setProperty('--ry',((e.clientX/innerWidth-.5)*10)+'deg');p.style.setProperty('--rx',(-(e.clientY/innerHeight-.5)*8)+'deg')});
+</script></body></html>

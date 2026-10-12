@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GS Self Storage - Planta Pública e UV</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body {
+      background: #030712;
+      color: #f3f4f6;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      background: #111827;
+      padding: 12px 24px;
+      border-bottom: 2px solid #1f2937;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    h1 { font-size: 1.15rem; color: #60a5fa; letter-spacing: 1px; font-weight: 700; }
+    .nav-floors { display: flex; gap: 8px; align-items: center; }
+    .btn {
+      background: #1f2937;
+      color: #9ca3af;
+      border: 1px solid #374151;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #374151; color: #fff; }
+    .btn.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #3b82f6;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+    }
+    .btn-uv {
+      background: #3b0764;
+      color: #e9d5ff;
+      border-color: #7e22ce;
+      margin-left: 12px;
+    }
+    .btn-uv:hover { background: #581c87; }
+    .btn-uv.active {
+      background: #9333ea;
+      color: #fff;
+      box-shadow: 0 0 15px rgba(147, 51, 234, 0.7);
+      border-color: #c084fc;
+    }
+    #workspace {
+      flex: 1;
+      position: relative;
+      background: #0b0f19;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    canvas {
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      border-radius: 6px;
+      cursor: crosshair;
+      background: #0f172a;
+    }
+    #status-bar {
+      background: #111827;
+      padding: 10px 24px;
+      border-top: 1px solid #1f2937;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .uv-indicator { font-weight: 600; color: #c084fc; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🏢 GS SELF STORAGE — PLANTA OFICIAL PÚBLICA</h1>
+    <div class="nav-floors">
+      <button class="btn active" onclick="setFloor(1)">TÉRREO</button>
+      <button class="btn" onclick="setFloor(2)">2º ANDAR</button>
+      <button class="btn" onclick="setFloor(3)">3º ANDAR</button>
+      <button class="btn" onclick="setFloor(4)">4º ANDAR</button>
+      <button class="btn btn-uv" id="uvBtn" onclick="toggleUV()">🔦 LANTERNA UV (DESLIGADA)</button>
+    </div>
+  </header>
+
+  <div id="workspace">
+    <canvas id="blueprintCanvas" width="900" height="640"></canvas>
+  </div>
+
+  <div id="status-bar">
+    <span id="logMsg">Inspecione a planta arquitetônica oficial do complexo.</span>
+    <span id="uvStatusIndicator" class="uv-indicator">Modo de Luz Normal</span>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('blueprintCanvas');
+    const ctx = canvas.getContext('2d');
+    const logMsg = document.getElementById('logMsg');
+    const uvStatusIndicator = document.getElementById('uvStatusIndicator');
+    const uvBtn = document.getElementById('uvBtn');
+
+    let currentFloor = 1;
+    let uvActive = false;
+    let mousePos = { x: -200, y: -200 };
+
+    // Precise coordinates for the secret UV spot underneath the staircase on the bottom-right corner
+    const secretSpot = { x: 820, y: 572, radius: 10 };
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mousePos.x = e.clientX - rect.left;
+      mousePos.y = e.clientY - rect.top;
+      draw();
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      mousePos = { x: -200, y: -200 };
+      draw();
+    });
+
+    function setFloor(floor) {
+      currentFloor = floor;
+      document.querySelectorAll('.nav-floors .btn').forEach((btn, idx) => {
+        if (idx < 4) btn.classList.toggle('active', idx + 1 === floor);
+      });
+      draw();
+    }
+
+    function toggleUV() {
+      uvActive = !uvActive;
+      uvBtn.classList.toggle('active', uvActive);
+      uvBtn.innerText = uvActive ? "🔦 LANTERNA UV 365nm (LIGADA)" : "🔦 LANTERNA UV (DESLIGADA)";
+      uvStatusIndicator.innerText = uvActive ? "Luz UV 365nm Ativa" : "Modo de Luz Normal";
+      uvStatusIndicator.style.color = uvActive ? "#c084fc" : "#9ca3af";
+      
+      if (!uvActive) {
+        logMsg.innerText = "Inspecione a planta arquitetônica oficial do complexo.";
+      } else {
+        logMsg.innerText = "Lanterna UV ativa.";
+      }
+      draw();
+    }
+
+    function fnDrawGrid() {
+      ctx.fillStyle = "#0d1b2a";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 20) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+    }
+
+    function fnDrawBlueprint() {
+      fnDrawGrid();
+
+      // Outer Perimeter Building Walls
+      ctx.strokeStyle = "#93c5fd";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(50, 30, 800, 570);
+
+      // Central Corridor (Vertical)
+      ctx.fillStyle = "rgba(255, 255, 255, 0.015)";
+      ctx.fillRect(380, 40, 140, 435);
+      ctx.strokeStyle = "#60a5fa";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(380, 40, 140, 435);
+
+      ctx.fillStyle = "rgba(147, 197, 253, 0.35)";
+      ctx.font = "11px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("CORREDOR CENTRAL", 450, 255);
+
+      // Boxes 1-5 Left, 6-10 Right
+      const startNum = currentFloor * 100;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#93c5fd";
+
+      for (let i = 0; i < 5; i++) {
+        let y = 50 + i * 82;
+        // Left Boxes (X01 to X05)
+        ctx.strokeRect(70, y, 300, 74);
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "bold 13px sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText(`BOX ${startNum + i + 1}`, 95, y + 43);
+
+        // Right Boxes (X06 to X10)
+        let rightBoxNum = i === 4 ? startNum + 10 : startNum + i + 6;
+        ctx.strokeRect(530, y, 300, 74);
+        ctx.fillText(`BOX ${rightBoxNum}`, 555, y + 43);
+      }
+
+      // Bottom Architecture Layout
+      ctx.strokeStyle = "#93c5fd";
+      ctx.lineWidth = 2;
+
+      if (currentFloor === 1) {
+        // Ground Floor: ESCRITÓRIO (Expanded rightwards), RECEPÇÃO (Centered), BANHEIRO, ELEVADOR, ESCADA
+        
+        // ESCRITÓRIO (Expanded rightwards, clean empty room)
+        ctx.strokeRect(70, 485, 290, 105);
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "bold 13px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("ESCRITÓRIO", 215, 542);
+
+        // RECEPÇÃO (Centered)
+        ctx.strokeRect(370, 485, 140, 105);
+        ctx.fillText("RECEPÇÃO", 440, 542);
+
+        // BANHEIRO
+        ctx.strokeRect(520, 485, 90, 105);
+        ctx.fillText("BANHEIRO", 565, 542);
+
+        // ELEVADOR (Left side of right cluster)
+        ctx.strokeRect(610, 485, 110, 105);
+        ctx.font = "11px sans-serif";
+        ctx.fillText("ELEVADOR", 665, 542);
+
+        // ESCADA (Right side of elevator - bottom right corner)
+        ctx.strokeRect(720, 485, 130, 105);
+        ctx.fillText("ESCADA", 785, 542);
+      } else {
+        // Upper Floors Bottom Layout
+        ctx.strokeRect(70, 485, 440, 105);
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "bold 13px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("ÁREA TÉCNICA / DEPÓSITO", 290, 542);
+
+        ctx.strokeStyle = "#93c5fd";
+        ctx.strokeRect(520, 485, 90, 105);
+        ctx.fillStyle = "#f8fafc";
+        ctx.fillText("BANHEIRO", 565, 542);
+
+        ctx.strokeRect(610, 485, 110, 105);
+        ctx.font = "11px sans-serif";
+        ctx.fillText("ELEVADOR", 665, 542);
+
+        ctx.strokeRect(720, 485, 130, 105);
+        ctx.fillText("ESCADA", 785, 542);
+      }
+
+      // Floor Marker Badge
+      ctx.fillStyle = "#60a5fa";
+      ctx.font = "bold 15px sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(`PLANTA ARQUITETÔNICA — ${currentFloor}º ANDAR`, 835, 22);
+    }
+
+    function fnDrawUVSecretLayer() {
+      if (!uvActive || currentFloor !== 1) return;
+
+      const distance = Math.hypot(mousePos.x - secretSpot.x, mousePos.y - secretSpot.y);
+      const uvBeamRadius = 35; // Small UV beam radius
+
+      if (distance < uvBeamRadius + secretSpot.radius) {
+        ctx.save();
+
+        // Clip to small UV beam circle
+        ctx.beginPath();
+        ctx.arc(mousePos.x, mousePos.y, uvBeamRadius, 0, Math.PI * 2);
+        ctx.clip();
+
+        // Invisible ink revealing in fluorescent cyan/purple
+        ctx.strokeStyle = "#c084fc";
+        ctx.fillStyle = "#c084fc";
+        ctx.shadowColor = "#9333ea";
+        ctx.shadowBlur = 10;
+        ctx.lineWidth = 1.2;
+
+        // Small hidden trapdoor & ladder sketch underneath the staircase on the bottom right
+        ctx.beginPath();
+        ctx.strokeRect(810, 562, 24, 24);
+        ctx.moveTo(810, 574); ctx.lineTo(834, 574);
+        ctx.stroke();
+
+        ctx.font = "bold 8px monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("▼ ALÇAPÃO", 822, 557);
+
+        ctx.restore();
+      }
+    }
+
+    function fnDrawUVCone() {
+      if (!uvActive || mousePos.x < 0) return;
+
+      const uvBeamRadius = 35;
+      const gradient = ctx.createRadialGradient(
+        mousePos.x, mousePos.y, 3,
+        mousePos.x, mousePos.y, uvBeamRadius
+      );
+      gradient.addColorStop(0, "rgba(168, 85, 247, 0.5)");
+      gradient.addColorStop(0.7, "rgba(126, 34, 206, 0.2)");
+      gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(mousePos.x, mousePos.y, uvBeamRadius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      fnDrawBlueprint();
+      fnDrawUVSecretLayer();
+      fnDrawUVCone();
+    }
+
+    // Initial render
+    draw();
+  </script>
+</body>
+</html>
