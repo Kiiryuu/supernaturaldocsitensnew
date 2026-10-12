@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celular Antigo 3D - Investigação RPG (2004)</title>
+    <!-- Importando a fonte Roboto do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #111;
+            font-family: 'Roboto', sans-serif;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            pointer-events: none;
+            text-shadow: 1px 1px #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">Use WASD para mover a câmera. Scroll fora da tela dá zoom. Scroll na tela LCD rola as mensagens.</div>
+
+    <!-- Importando Three.js e OrbitControls via CDN estável -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // --- CONFIGURAÇÃO DA CENA ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1a1a1a);
+
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 16);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enableZoom = true; 
+        controls.minDistance = 5;
+        controls.maxDistance = 25;
+
+        // --- CONTROLE DE MOVIMENTO COM WASD ---
+        const moveState = { forward: false, backward: false, left: false, right: false };
+        
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'w' || e.key === 'W') moveState.forward = true;
+            if (e.key === 's' || e.key === 'S') moveState.backward = true;
+            if (e.key === 'a' || e.key === 'A') moveState.left = true;
+            if (e.key === 'd' || e.key === 'D') moveState.right = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'w' || e.key === 'W') moveState.forward = false;
+            if (e.key === 's' || e.key === 'S') moveState.backward = false;
+            if (e.key === 'a' || e.key === 'A') moveState.left = false;
+            if (e.key === 'd' || e.key === 'D') moveState.right = false;
+        });
+
+        function updateCameraPosition() {
+            const speed = 0.1;
+            if (moveState.forward) controls.target.y += speed;
+            if (moveState.backward) controls.target.y -= speed;
+            if (moveState.left) controls.target.x -= speed;
+            if (moveState.right) controls.target.x += speed;
+        }
+
+        // --- ILUMINAÇÃO ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        dirLight.position.set(5, 15, 10);
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        // --- CANVAS PARA A TELA LCD DO CELULAR ---
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 320;
+        const ctx = canvas.getContext('2d');
+
+        const screenTexture = new THREE.CanvasTexture(canvas);
+        screenTexture.minFilter = THREE.LinearFilter;
+
+        // Dados exatos do chat incluindo a nova mensagem do Adrian no final
+        // 0: Adrian, 1: Número Descartável
+        const chatLog = [
+            { type: 0, sender: "Adrian", text: "Coloquei tudo no 401.", time: "14:12" },
+            { type: 1, sender: "Número Descartável", text: "E o barulho?", time: "14:13" },
+            { type: 0, sender: "Adrian", text: "Ainda dá pra ouvir do corredor. A porta de metal ajudou, mas não resolveu. Vou ter que trocar", time: "14:14" },
+            { type: 1, sender: "Número Descartável", text: "Pelo 403?", time: "14:15" },
+            { type: 0, sender: "Adrian", text: "Não, lá embaixo... achou a porra da sua chave?", time: "14:15" },
+            { type: 1, sender: "Número Descartável", text: "Tô procurando. Acho que deixei cair quando saí de lá.", time: "14:16" },
+            { type: 0, sender: "Adrian", text: "Você tem certeza que não deixou no carro?", time: "14:17" },
+            { type: 1, sender: "Número Descartável", text: "Já procurei no carro duas vezes.", time: "14:17" },
+            { type: 0, sender: "Adrian", text: "Então volta lá e procura direito.", time: "14:18" },
+            { type: 1, sender: "Número Descartável", text: "Eu vou. Não posso deixar essa chave por aí.", time: "14:19" },
+            { type: 0, sender: "Adrian", text: "Volta pra cá logo e me ajuda, a policia já passou lá e não encontrou, deixa isso pra depois.", time: "14:20" },
+            { type: 1, sender: "Número Descartável", text: "Tá.", time: "14:21" },
+            { type: 0, sender: "Adrian", text: "CADE VOCÊ PORRA?", time: "14:22" }
+        ];
+
+        let chatScrollOffset = 0; 
+        let isMouseOverScreen = false; 
+
+        // --- CONTADOR REGRESSIVO DE 10 MINUTOS ---
+        let remainingSeconds = 10 * 60; // 10 minutos em segundos
+        setInterval(() => {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                updateScreenCanvas();
+            }
+        }, 1000);
+
+        function formatTimeCountdown(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function wrapTextAndGetLines(ctx, text, maxWidth) {
+            const words = text.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                let word = words[i];
+                let width = ctx.measureText(currentLine + " " + word).width;
+                if (width < maxWidth) {
+                    currentLine += " " + word;
+                } else {
+                    lines.push(currentLine);
+                    currentLine = word;
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // Função para desenhar a interface LCD no Canvas
+        function updateScreenCanvas() {
+            ctx.fillStyle = '#c7d7c5'; // Cor de fundo LCD antiga (esverdeada)
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Barra de status superior fixa (Sem sinal 📵, Bateria 10%)
+            ctx.fillStyle = '#2f3e2e';
+            ctx.fillRect(0, 0, canvas.width, 24);
+            ctx.fillStyle = '#c7d7c5';
+            ctx.font = 'bold 11px Roboto, sans-serif';
+            ctx.fillText("MENSAGENS", 8, 16);
+            ctx.fillText("📵 🔋 10%", 185, 16);
+
+            // 2. Sub-barra com o contador regressivo ativado ao abrir
+            ctx.fillStyle = '#455c44';
+            ctx.fillRect(0, 24, canvas.width, 18);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 10px Roboto, sans-serif';
+            ctx.fillText(`⏱ Tempo restante: ${formatTimeCountdown(remainingSeconds)}`, 45, 37);
+
+            // 3. Título do Chat
+            ctx.fillStyle = '#2f3e2e';
+            ctx.font = 'bold 11px Roboto, sans-serif';
+            ctx.fillText("Chat: Adrian & Descartável", 8, 55);
+            ctx.fillRect(8, 60, 240, 1); // Linha divisória
+
+            // 4. Área de Mensagens (limitada estritamente ao visor entre y=62 e y=295)
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(5, 62, 246, 233);
+            ctx.clip(); // Restringe o desenho estritamente ao visor do chat
+
+            let currentY = 70 - chatScrollOffset; 
+
+            chatLog.forEach((m) => {
+                const isAdrian = (m.type === 0);
+                ctx.font = '10px Roboto, sans-serif';
+                
+                let maxBubbleWidth = 140;
+                let textLines = wrapTextAndGetLines(ctx, m.text, maxBubbleWidth);
+                let bubbleHeight = (textLines.length * 13) + 14;
+                let bubbleWidth = maxBubbleWidth + 10;
+                let bubbleX;
+
+                if (isAdrian) {
+                    bubbleX = 15; 
+                    ctx.fillStyle = '#b2c4b0';
+                } else {
+                    bubbleX = canvas.width - bubbleWidth - 15; 
+                    ctx.fillStyle = '#d7e2d6';
+                }
+
+                ctx.strokeStyle = '#2f3e2e';
+                ctx.lineWidth = 1;
+                ctx.fillRect(bubbleX, currentY, bubbleWidth, bubbleHeight);
+                ctx.strokeRect(bubbleX, currentY, bubbleWidth, bubbleHeight);
+
+                ctx.fillStyle = '#1b301a';
+                ctx.font = 'bold 9px Roboto, sans-serif';
+                let headerText = `${m.sender} ${m.time}`;
+                if (!isAdrian) {
+                    let textWidth = ctx.measureText(headerText).width;
+                    ctx.fillText(headerText, bubbleX + bubbleWidth - textWidth - 5, currentY + 11);
+                } else {
+                    ctx.fillText(headerText, bubbleX + 5, currentY + 11);
+                }
+
+                ctx.fillStyle = '#111111';
+                ctx.font = '10px Roboto, sans-serif';
+                let textY = currentY + 23;
+                textLines.forEach(line => {
+                    ctx.fillText(line, bubbleX + 5, textY);
+                    textY += 13;
+                });
+
+                currentY += bubbleHeight + 6;
+            });
+
+            ctx.restore(); // Restaura o contexto após o recorte do visor
+
+            // 5. Barra de ferramentas inferior fixa
+            ctx.fillStyle = '#2f3e2e';
+            ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
+            ctx.fillStyle = '#c7d7c5';
+            ctx.font = '9px Roboto, sans-serif';
+            ctx.fillText("Opções", 8, canvas.height - 7);
+            ctx.fillText("Voltar", 220, canvas.height - 7);
+
+            screenTexture.needsUpdate = true;
+        }
+
+        updateScreenCanvas();
+
+        // --- CONSTRUÇÃO DO MODELO 3D DO CELULAR FIXO ---
+        const phoneGroup = new THREE.Group();
+        scene.add(phoneGroup);
+
+        const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0x2b3a42, roughness: 0.4, metalness: 0.6 });
+        const screenBezelMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.2 });
+        const keyMaterial = new THREE.MeshStandardMaterial({ color: 0xdcdcdc, roughness: 0.5 });
+
+        const bodyGeometry = new THREE.BoxGeometry(3.6, 8.5, 0.6);
+        const bodyMesh = new THREE.Mesh(bodyGeometry, bodyMaterial);
+        bodyMesh.castShadow = true;
+        phoneGroup.add(bodyMesh);
+
+        const screenBezelGeo = new THREE.PlaneGeometry(2.8, 3.4);
+        const screenBezel = new THREE.Mesh(screenBezelGeo, screenBezelMat);
+        screenBezel.position.set(0, 2.0, 0.31);
+        phoneGroup.add(screenBezel);
+
+        const screenGeo = new THREE.PlaneGeometry(2.4, 3.0);
+        const screenMat = new THREE.MeshBasicMaterial({ map: screenTexture });
+        const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+        screenMesh.position.set(0, 2.0, 0.32);
+        phoneGroup.add(screenMesh);
+
+        for (let r = 0; r < 4; r++) {
+            for (let c = 0; c < 3; c++) {
+                const keyGeo = new THREE.BoxGeometry(0.8, 0.4, 0.1);
+                const key = new THREE.Mesh(keyGeo, keyMaterial);
+                key.position.set((c - 1) * 0.9, -0.7 - (r * 0.55), 0.32);
+                phoneGroup.add(key);
+            }
+        }
+
+        const antennaGeo = new THREE.CylinderGeometry(0.12, 0.12, 1.2, 8);
+        const antenna = new THREE.Mesh(antennaGeo, bodyMaterial);
+        antenna.position.set(1.3, 4.25, 0);
+        phoneGroup.add(antenna);
+
+        // --- ROLAGEM E MOUSE ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObject(screenMesh);
+            isMouseOverScreen = (intersects.length > 0);
+            controls.enableZoom = !isMouseOverScreen;
+        });
+
+        window.addEventListener('wheel', (event) => {
+            if (isMouseOverScreen) {
+                event.preventDefault(); 
+                chatScrollOffset += event.deltaY * 0.3;
+                if (chatScrollOffset < 0) chatScrollOffset = 0;
+                if (chatScrollOffset > 550) chatScrollOffset = 550; 
+                updateScreenCanvas();
+            }
+        }, { passive: false });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            updateCameraPosition();
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
