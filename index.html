@@ -105,10 +105,10 @@
             letter-spacing: 1px;
         }
         .btn-limpar {
-            background: transparent;
-            border: 1px solid #5a1a1a;
-            color: #8a8a8a;
-            font-size: 10px;
+            background: #3a0000;
+            border: 1px solid #8b0000;
+            color: #d1c7bd;
+            font-size: 11px;
             text-transform: uppercase;
             padding: 4px 8px;
             border-radius: 3px;
@@ -117,9 +117,8 @@
             font-family: inherit;
         }
         .btn-limpar:hover {
-            background: #5a0000;
+            background: #b22222;
             color: #ffffff;
-            border-color: #b22222;
         }
         .atalho-btn {
             display: block;
@@ -156,14 +155,13 @@
         <div id="secaoAtalhos" class="atalhos-container" style="display: none;">
             <div class="header-atalhos">
                 <h4>Registos Desbloqueados</h4>
-                <button class="btn-limpar" onclick="limparHistorico()">Limpar</button>
+                <button class="btn-limpar" onclick="limparHistorico()">Limpar Histórico</button>
             </div>
             <div id="listaAtalhos"></div>
         </div>
     </div>
 
     <script>
-        // Mapeamento completo dos ficheiros
         const rotas = {
             "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
             "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
@@ -207,8 +205,91 @@
         };
 
         function normalizarTexto(texto) {
+            if (!texto) return "";
             return texto
+                .toString()
                 .toLowerCase()
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
-                .
+                .replace(/[^a-z0-9\s]/g, "")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function carregarAtalhos() {
+            try {
+                const listaAtalhosDiv = document.getElementById("listaAtalhos");
+                const secaoAtalhos = document.getElementById("secaoAtalhos");
+                if (!listaAtalhosDiv || !secaoAtalhos) return;
+
+                listaAtalhosDiv.innerHTML = "";
+                let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
+
+                if (Array.isArray(atalhosSalvos) && atalhosSalvos.length > 0) {
+                    secaoAtalhos.style.display = "block";
+                    let exibidos = [];
+
+                    atalhosSalvos.forEach(senhaKey => {
+                        if (rotas[senhaKey]) {
+                            const info = rotas[senhaKey];
+                            if (!exibidos.includes(info.nome)) {
+                                exibidos.push(info.nome);
+                                const btn = document.createElement("button");
+                                btn.className = "atalho-btn";
+                                btn.textContent = `📜 ${info.nome}`;
+                                btn.onclick = function() {
+                                    window.location.href = info.arquivo;
+                                };
+                                listaAtalhosDiv.appendChild(btn);
+                            }
+                        }
+                    });
+                } else {
+                    secaoAtalhos.style.display = "none";
+                }
+            } catch (e) {
+                console.error("Erro ao carregar atalhos:", e);
+            }
+        }
+
+        function tentarAcessar() {
+            const inputVal = document.getElementById("senhaInput").value;
+            const senhaNormalizada = normalizarTexto(inputVal);
+            const erroDiv = document.getElementById("erro");
+
+            if (rotas[senhaNormalizada]) {
+                erroDiv.textContent = "";
+                try {
+                    let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
+                    if (!Array.isArray(atalhosSalvos)) atalhosSalvos = [];
+                    if (!atalhosSalvos.includes(senhaNormalizada)) {
+                        atalhosSalvos.push(senhaNormalizada);
+                        localStorage.setItem("spn_atalhos_v2", JSON.stringify(atalhosSalvos));
+                    }
+                } catch (e) {
+                    console.error("Erro ao guardar histórico:", e);
+                }
+
+                window.location.href = rotas[senhaNormalizada].arquivo;
+            } else {
+                erroDiv.textContent = "Chave incorreta ou desconhecida!";
+            }
+        }
+
+        function limparHistorico() {
+            if (confirm("Tem certeza que deseja apagar os registros desbloqueados?")) {
+                localStorage.removeItem("spn_atalhos_v2");
+                carregarAtalhos();
+            }
+        }
+
+        document.getElementById("senhaInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                tentarAcessar();
+            }
+        });
+
+        window.onload = carregarAtalhos;
+    </script>
+</body>
+</html>
