@@ -162,46 +162,44 @@
     </div>
 
     <script>
+        // Mapeamento exato baseado na lista oficial do teu repositório
         const rotas = {
+            "480": { arquivo: "480.pdf", nome: "Registro 480" },
+            "a ultima batalha": { arquivo: "A ultima batalha.pdf", nome: "A Última Batalha" },
+            "ultima batalha": { arquivo: "A ultima batalha.pdf", nome: "A Última Batalha" },
             "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
+            "agnes 2": { arquivo: "Agnes2.pdf", nome: "Documento: Agnes 2" },
+            "agnes2": { arquivo: "Agnes2.pdf", nome: "Documento: Agnes 2" },
             "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
-            "o livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" },
-            "livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" },
+            "citala": { arquivo: "Cítala.html", nome: "Cítala (HTML)" },
             "equilibrio": { arquivo: "EQUILIBRIO.pdf", nome: "Documento: Equilíbrio" },
+            "excallibur": { arquivo: "Excallibur.pdf", nome: "Excallibur" },
+            "excalibur": { arquivo: "Excallibur.pdf", nome: "Excallibur" },
             "hungaro": { arquivo: "HUNGARO.pdf", nome: "Documento: Húngaro" },
+            "leonidas": { arquivo: "Leonidas.pdf", nome: "Leonidas" },
             "malachim": { arquivo: "MALACHIM.pdf", nome: "Documento: Malachim" },
             "nefilim": { arquivo: "NEFILIM.pdf", nome: "Documento: Nefilim" },
+            "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
+            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
             "o caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
             "caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
-            
+            "o livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" },
+            "livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" },
+            "po de fantasma": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
+            "materiais": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
+            "simonides": { arquivo: "Simónides.pdf", nome: "Simónides" },
+            "tubo de ensaio": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },
+            "tubo": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },
+            "caixa": { arquivo: "caixa.html", nome: "Caixa de Baralho" },
             "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "arthur": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "rafael": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "rafael dumas": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "arthur kravinsk": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
-
-            "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
-            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
-            "caixa": { arquivo: "baralho.html", nome: "Caixa de Baralho" },
-            "tubo de ensaio": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },
-            "tubo": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },
-            "po de fantasma": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
-            "materiais": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
-
-            "agnes 2": { arquivo: "Agnes2.pdf", nome: "Documento: Agnes 2" },
-            "agnes2": { arquivo: "Agnes2.pdf", nome: "Documento: Agnes 2" },
             "o rei de camelot": { arquivo: "o rei de camelot.pdf", nome: "O Rei de Camelot" },
             "rei de camelot": { arquivo: "o rei de camelot.pdf", nome: "O Rei de Camelot" },
-            "excallibur": { arquivo: "Excallibur.pdf", nome: "Excallibur" },
-            "excalibur": { arquivo: "Excallibur.pdf", nome: "Excallibur" },
-            "a ultima batalha": { arquivo: "A ultima batalha.pdf", nome: "A Última Batalha" },
-            "ultima batalha": { arquivo: "A ultima batalha.pdf", nome: "A Última Batalha" },
-            "leonidas": { arquivo: "Leonidas.pdf", nome: "Leonidas" },
-            "480": { arquivo: "480.pdf", nome: "Registro 480" },
-            "citala": { arquivo: "Cítala.html", nome: "Cítala (HTML)" },
-            "molon labe": { arquivo: "molon labe.pdf", nome: "Molon Labe" },
-            "molonlabe": { arquivo: "molon labe.pdf", nome: "Molon Labe" },
-            "simonides": { arquivo: "Simónides.pdf", nome: "Simónides" }
+            "molon labe": { arquivo: "μολὼν λαβέ.pdf", nome: "Molon Labe" },
+            "molonlabe": { arquivo: "μολὼν λαβέ.pdf", nome: "Molon Labe" }
         };
 
         function normalizarTexto(texto) {
