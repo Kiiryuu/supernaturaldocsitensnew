@@ -91,12 +91,35 @@
             max-height: 250px;
             overflow-y: auto;
         }
-        .atalhos-container h4 {
-            margin: 0 0 12px 0;
+        .header-atalhos {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .header-atalhos h4 {
+            margin: 0;
             font-size: 12px;
             color: #a89f91;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+        .btn-limpar {
+            background: transparent;
+            border: 1px solid #5a1a1a;
+            color: #8a8a8a;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .btn-limpar:hover {
+            background: #5a0000;
+            color: #ffffff;
+            border-color: #b22222;
         }
         .atalho-btn {
             display: block;
@@ -131,13 +154,16 @@
         <div id="erro"></div>
 
         <div id="secaoAtalhos" class="atalhos-container" style="display: none;">
-            <h4>Registos Desbloqueados</h4>
+            <div class="header-atalhos">
+                <h4>Registos Desbloqueados</h4>
+                <button class="btn-limpar" onclick="limparHistorico()">Limpar</button>
+            </div>
             <div id="listaAtalhos"></div>
         </div>
     </div>
 
     <script>
-        // Mapeamento completo atualizado com os novos ficheiros
+        // Mapeamento completo dos ficheiros
         const rotas = {
             "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
             "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
@@ -150,7 +176,6 @@
             "o caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
             "caminho da dicotomia": { arquivo: "O CAMINHO DA DICOTOMIA.pdf", nome: "O Caminho da Dicotomia" },
             
-            // Senhas para Maxmiliam
             "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "arthur": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
             "rafael": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
@@ -165,7 +190,6 @@
             "po de fantasma": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
             "materiais": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
 
-            // NOVOS FICHEIROS
             "agnes 2": { arquivo: "Agnes2.pdf", nome: "Documento: Agnes 2" },
             "agnes2": { arquivo: "Agnes2.pdf", nome: "Documento: Agnes 2" },
             "o rei de camelot": { arquivo: "o rei de camelot.pdf", nome: "O Rei de Camelot" },
@@ -187,68 +211,4 @@
                 .toLowerCase()
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "")
-                .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"']/g, "")
-                .replace(/\s+/g, " ")
-                .trim();
-        }
-
-        function carregarAtalhos() {
-            const listaAtalhosDiv = document.getElementById("listaAtalhos");
-            const secaoAtalhos = document.getElementById("secaoAtalhos");
-            listaAtalhosDiv.innerHTML = "";
-
-            let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
-
-            if (atalhosSalvos.length > 0) {
-                secaoAtalhos.style.display = "block";
-                
-                let exibidos = [];
-
-                atalhosSalvos.forEach(senhaKey => {
-                    if (rotas[senhaKey]) {
-                        const info = rotas[senhaKey];
-                        if (!exibidos.includes(info.nome)) {
-                            exibidos.push(info.nome);
-                            const btn = document.createElement("button");
-                            btn.className = "atalho-btn";
-                            btn.textContent = `📜 ${info.nome}`;
-                            btn.onclick = function() {
-                                window.location.href = info.arquivo;
-                            };
-                            listaAtalhosDiv.appendChild(btn);
-                        }
-                    }
-                });
-            } else {
-                secaoAtalhos.style.display = "none";
-            }
-        }
-
-        function tentarAcessar() {
-            const inputVal = document.getElementById("senhaInput").value;
-            const senhaNormalizada = normalizarTexto(inputVal);
-            const erroDiv = document.getElementById("erro");
-
-            if (rotas[senhaNormalizada]) {
-                let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
-                if (!atalhosSalvos.includes(senhaNormalizada)) {
-                    atalhosSalvos.push(senhaNormalizada);
-                    localStorage.setItem("spn_atalhos_v2", JSON.stringify(atalhosSalvos));
-                }
-
-                window.location.href = rotas[senhaNormalizada].arquivo;
-            } else {
-                erroDiv.textContent = "Chave incorreta ou desconhecida!";
-            }
-        }
-
-        document.getElementById("senhaInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                tentarAcessar();
-            }
-        });
-
-        window.onload = carregarAtalhos;
-    </script>
-</body>
-</html>
+                .
