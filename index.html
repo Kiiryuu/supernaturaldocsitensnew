@@ -162,7 +162,6 @@
     </div>
 
     <script>
-        // Mapeamento exato baseado na lista oficial do teu repositório
         const rotas = {
             "480": { arquivo: "480.pdf", nome: "Registro 480" },
             "a ultima batalha": { arquivo: "A ultima batalha.pdf", nome: "A Última Batalha" },
@@ -251,9 +250,15 @@
         }
 
         function tentarAcessar() {
-            const inputVal = document.getElementById("senhaInput").value;
-            const senhaNormalizada = normalizarTexto(inputVal);
+            const input = document.getElementById("senhaInput");
             const erroDiv = document.getElementById("erro");
+            
+            if (!input) {
+                alert("Erro: Campo de senha não encontrado!");
+                return;
+            }
+
+            const senhaNormalizada = normalizarTexto(input.value);
 
             if (rotas[senhaNormalizada]) {
                 erroDiv.textContent = "";
@@ -265,12 +270,12 @@
                         localStorage.setItem("spn_atalhos_v2", JSON.stringify(atalhosSalvos));
                     }
                 } catch (e) {
-                    console.error("Erro ao guardar histórico:", e);
+                    console.error("Erro no localStorage:", e);
                 }
 
                 window.location.href = rotas[senhaNormalizada].arquivo;
             } else {
-                erroDiv.textContent = "Chave incorreta ou desconhecida!";
+                erroDiv.textContent = "Chave desconhecida: '" + senhaNormalizada + "'";
             }
         }
 
