@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Rye&display=swap" rel="stylesheet">
+<title>Seven Haven — Catálogo de Caçadores</title>
+<style>
+:root{--wood:#2a1b12;--paper:#d9d3bd;--paper2:#cbc4aa;--ink:#2b2a24;--red:#8e2a1f;--green:#3d5a2e;--muted:#6d6a58;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(circle at 50% 30%,#4a3222,var(--wood));font-family:Georgia,"Times New Roman",serif;color:var(--ink);min-height:100vh;padding:16px}
+.book{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1.35fr 1fr;box-shadow:0 20px 60px #000a;border-radius:4px;overflow:hidden}
+.page{background:linear-gradient(90deg,var(--paper2),var(--paper) 8%,var(--paper) 92%,var(--paper2));padding:22px 26px;min-height:640px}
+.page.right{border-left:3px solid #0003;background:linear-gradient(270deg,var(--paper2),var(--paper) 8%,var(--paper) 92%,var(--paper2))}
+h1{font-size:13px;letter-spacing:.35em;text-transform:uppercase;margin:0 0 4px;text-align:center;color:var(--muted)}
+h2{font-size:30px;margin:0 0 12px;text-align:center;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid var(--ink);padding-bottom:8px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;justify-content:center}
+.tab{font:inherit;font-size:12px;text-transform:uppercase;letter-spacing:.08em;padding:6px 10px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.tab.on{background:var(--ink);color:var(--paper)}
+.intro{font-style:italic;font-size:13px;color:var(--muted);text-align:center;margin:0 0 14px}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:11px 0;border-bottom:1px dashed #0004}
+.item h3{margin:0;font-size:17px;text-transform:uppercase;letter-spacing:.03em}
+.stats{font-size:12px;color:var(--red);font-weight:bold;margin:2px 0}
+.desc{font-size:13px;margin:0;line-height:1.35}
+.buy{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.price{border:2px solid var(--ink);border-radius:50%;min-width:74px;height:74px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:bold;text-align:center;padding:4px;line-height:1.1}
+.qty{display:flex;align-items:center;gap:4px}
+.qty button{font:inherit;width:26px;height:26px;border:1px solid var(--ink);background:transparent;cursor:pointer;font-size:16px;line-height:1;color:var(--ink)}
+.qty button:hover{background:var(--ink);color:var(--paper)}
+.qty span{min-width:22px;text-align:center;font-weight:bold}
+.wallet{border:2px solid var(--ink);padding:10px;margin-bottom:14px;text-align:center}
+.wallet label{font-size:12px;text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:6px}
+.wallet input{font:inherit;font-size:24px;width:100%;max-width:200px;text-align:center;background:#fff6;border:1px solid var(--ink);padding:4px;color:var(--ink)}
+.lines{min-height:200px}
+.line{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:14px;padding:5px 0;border-bottom:1px dotted #0004}
+.line small{color:var(--muted);grid-column:1/-1;font-size:12px}
+.empty{font-style:italic;color:var(--muted);text-align:center;padding:30px 0}
+.tot{margin-top:12px;border-top:2px solid var(--ink);padding-top:8px;font-size:16px}
+.tot div{display:flex;justify-content:space-between;padding:3px 0}
+.tot .saldo{font-size:22px;font-weight:bold;color:var(--green);border-top:1px solid var(--ink);margin-top:4px;padding-top:6px}
+.tot .saldo.neg{color:var(--red)}
+.warn{color:var(--red);font-weight:bold;text-align:center;font-size:13px;margin-top:6px;min-height:18px}
+.clear{font:inherit;margin-top:10px;width:100%;padding:8px;border:1px solid var(--ink);background:transparent;text-transform:uppercase;letter-spacing:.1em;font-size:12px;cursor:pointer;color:var(--ink)}
+.clear:hover{background:var(--ink);color:var(--paper)}
+.note{font-size:11px;color:var(--muted);margin-top:14px;font-style:italic}
+.cust{border:1px dashed var(--ink);padding:8px;margin-bottom:12px}.cust b{font-size:12px;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px}.cust .row{display:flex;gap:6px}.cust input{font:inherit;font-size:14px;min-width:0;padding:4px;background:#fff6;border:1px solid var(--ink);color:var(--ink)}#cname{flex:1}#cprice{width:90px}.cust button,.line button{font:inherit;font-size:12px;border:1px solid var(--ink);background:transparent;cursor:pointer;color:var(--ink);padding:4px 8px}.cust button:hover,.line button:hover{background:var(--ink);color:var(--paper)}.line .rm{padding:0 6px;margin-left:6px}#buy{font:inherit;margin-top:10px;width:100%;padding:10px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);text-transform:uppercase;letter-spacing:.1em;font-size:14px;cursor:pointer}#buy:disabled{opacity:.35;cursor:not-allowed}
+.pager{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px}.pager button{font:inherit;font-size:12px;border:1px solid var(--ink);background:transparent;padding:5px 9px;cursor:pointer;color:var(--ink)}.pager button:disabled{opacity:.35;cursor:default}
+body{background:radial-gradient(ellipse at 50% 40%,#0000 35%,#000b 100%),repeating-linear-gradient(90deg,#0000 0 118px,#0006 119px 120px),repeating-linear-gradient(0deg,#4a3020 0 7px,#3d2619 7px 8px,#44291b 8px 15px)}
+.hud{max-width:1100px;margin:0 auto 8px;text-align:right;color:#efe4c4;font-family:Rye,Georgia,serif;font-size:24px;text-shadow:0 2px 4px #000}
+.hud::before{content:"Dinheiro";font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;margin-right:10px}
+.book{border:10px solid #1a0f08;border-radius:8px;box-shadow:0 30px 90px #000,0 0 0 2px #6b4527}
+.page{position:relative;padding:34px 36px;font-family:"IM Fell English",Georgia,serif;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),linear-gradient(#d8cfae,#cfc5a0)}
+.page:not(.right){box-shadow:inset 0 0 90px #6b4a2299,inset -50px 0 36px -30px #000b}
+.page.right{border-left:0;box-shadow:inset 0 0 90px #6b4a2299,inset 50px 0 36px -30px #000b}
+.page::before{content:"";position:absolute;inset:12px;border:3px double #2b2a24aa;pointer-events:none}
+.page h1{font-family:Rye,Georgia,serif;font-size:11px;letter-spacing:.3em;color:#5a4a30}
+.page h2{font-family:"IM Fell English SC",Georgia,serif;font-size:clamp(24px,5vw,36px);border-bottom:3px double var(--ink);text-shadow:1px 1px 0 #fff5}
+.tab{font-family:"IM Fell English SC",Georgia,serif;font-size:13px;background:#0000000d;transition:.15s}
+.tab:hover{background:#0002}
+.tab.on{background:var(--red);border-color:#4a120c;color:#f3e9cf;transform:translateY(-2px);box-shadow:0 3px 0 #4a120c}
+.item{transition:background .15s;padding:12px 6px}.item:hover{background:#fff3}
+.item h3{font-family:"IM Fell English SC",Georgia,serif;font-size:20px}
+.price{min-width:80px;height:80px;border:3px double var(--ink);font-family:"IM Fell English SC",Georgia,serif;font-size:19px;transform:rotate(-4deg);background:radial-gradient(#fff4,#0000)}
+.desc,.intro,.line,.note{font-family:"IM Fell English",Georgia,serif}
+.wallet{border:3px double var(--ink);background:#fff3}
+.tot .saldo{font-family:"IM Fell English SC",Georgia,serif;font-size:26px}
+#buy{background:var(--red);border-color:#4a120c;font-family:"IM Fell English SC",Georgia,serif;font-size:16px;box-shadow:0 4px 0 #4a120c;transition:.1s}
+#buy:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #4a120c}
+.turn .item{transform-origin:left center;animation:turn .45s ease both}
+@keyframes turn{from{opacity:0;transform:perspective(800px) rotateY(-16deg) translateX(-14px)}to{opacity:1;transform:none}}
+.page.leaf,.page.under{position:absolute;inset:0;margin:0;min-height:0;z-index:6;pointer-events:none}
+.page.under{z-index:5}
+.page.leaf{transform-origin:left center;backface-visibility:hidden;animation:leaf .8s cubic-bezier(.55,.1,.65,.9) forwards;box-shadow:14px 0 34px #000a,inset 0 0 90px #6b4a2299}
+.page.leaf.rev{animation:leafrev .8s cubic-bezier(.3,.1,.45,.9) forwards}
+@keyframes leaf{0%{transform:perspective(1800px) rotateY(0);filter:brightness(1)}60%{filter:brightness(.82)}100%{transform:perspective(1800px) rotateY(-92deg);filter:brightness(.7)}}
+@keyframes leafrev{0%{transform:perspective(1800px) rotateY(-92deg);filter:brightness(.7)}100%{transform:perspective(1800px) rotateY(0);filter:brightness(1)}}
+#items{display:flex;flex-direction:column;min-height:1170px}
+.pager{margin-top:auto;padding-top:14px}
+.intro{min-height:2.8em}
+@media(max-width:800px){.book{grid-template-columns:1fr}.page{min-height:0}.page.right{border-left:0;border-top:3px solid #0003}}
+</style>
+</head>
+<body>
+<div class="hud" id="hud"></div>
+<div class="book">
+  <section class="page">
+    <h1>Seven Haven · Suprimentos para Caçadores</h1>
+    <h2 id="cat-title">Armas de Fogo</h2>
+    <div class="tabs" id="tabs"></div>
+    <p class="intro" id="intro"></p>
+    <div id="items"></div>
+  </section>
+  <section class="page right">
+    <h1>Livro de Contas</h1>
+    <h2>Seu Pedido</h2>
+    <div class="wallet">
+      <label for="money">Dinheiro disponível (R$)</label>
+      <input id="money" type="number" min="0" step="50" value="1000" inputmode="decimal">
+    </div>
+    <div class="cust"><b>Item fora do catálogo</b><div class="row"><input id="cname" placeholder="Nome (opcional)"><input id="cprice" type="number" min="0" step="10" placeholder="R$ preço" inputmode="decimal"><button id="cadd">Adicionar</button></div></div>
+    <div class="lines" id="lines"></div>
+    <div class="tot">
+      <div><span>Itens</span><span id="count">0</span></div>
+      <div><span>Total (compras − ganhos)</span><span id="total">R$ 0,00</span></div>
+      <div class="saldo" id="saldo"><span>Saldo restante</span><span id="saldoV">R$ 1.000,00</span></div>
+    </div>
+    <div class="warn" id="warn"></div>
+    <button id="buy">Finalizar compra</button>
+    <button class="clear" id="clear">Limpar pedido</button>
+    <p class="note">Dano e alcance são valores sugeridos: ajuste conforme as regras do Oblivio RPG da sua mesa. A loja vende o material, não garante que funcione contra qualquer criatura.</p>
+  </section>
+</div>
+<script>
+const CATS={
+ armas:{n:"Armas de Fogo",i:"Convencionais ainda servem contra muita coisa, desde que a munição seja a certa. Documentação por conta do comprador."},
+ municao:{n:"Munição",i:"A comum é fácil de achar. A especial exige fornecedor que não faça perguntas."},
+ brancas:{n:"Armas Brancas",i:"Sem munição, silenciosas e úteis em espaços apertados. Prata custa caro: o dono cobra pela discrição."},
+ sobrenatural:{n:"Contra o Sobrenatural",i:"Ferramentas de métodos de caça conhecidos. Não são mágicas por si mesmas."},
+ investigacao:{n:"Investigação",i:"Toda caçada começa antes do confronto. Reúna evidências e sobreviva à investigação."},
+ protecao:{n:"Proteção",i:"Leve +1 · Média +2 (Carne 6) · Pesada +3 (Carne 7 e Força 7). Sugestão: só vale a maior proteção equipada."},
+ arremessaveis:{n:"Arremessáveis",i:"Explosivos e granadas. Variantes de prata, ferro e sal para quem sabe o que está caçando. Cuidado com o raio."},
+ servicos:{n:"Espólios",i:"Partes de criaturas que o Seven Haven compra para revender ou usar. Quanto mais rara e perigosa a criatura, maior o pagamento. O dono avalia o estado e pode pagar menos (ou recusar)."},
+ contratos:{n:"Contratos",i:"Trabalhos que o dono repassa. O pagamento sai ao concluir, mediante provas (fotos, testemunhas, registros), já que não dá para medir o perigo de uma criatura só por um pedaço dela."},
+ servicospagos:{n:"Serviços",i:"O Seven Haven resolve problemas por você. O pagamento não garante resultado: uma pesquisa pode terminar sem resposta, um documento pode ser falso e um fornecedor pode não ter o material."}
+};
+// [categoria, id, nome, preço, stats, descrição]
+const D=[
+["armas","a1","Revólver convencional",2800,"Dano 2d6 · Alcance 20 m · 6 tiros","Confiável e simples. Recarga lenta."],
+["armas","a2","Pistola semiautomática",3500,"Dano 2d6 · Alcance 25 m · 15 tiros","Mais disparos antes de recarregar."],
+["armas","a3","Escopeta de caça",4200,"Dano 3d6 · Alcance 15 m · 5 tiros","Letal de perto, perde força com a distância."],
+["armas","a4","Espingarda de cano duplo antiga",3600,"Dano 3d6 · Alcance 12 m · 2 tiros","Dois disparos seguidos e recarga demorada."],
+["armas","a5","Escopeta de cano serrado",2400,"Dano 4d6 · Alcance 5 m · 2 tiros","Brutal a curta distância. Quase inútil de longe. (item novo)"],
+["armas","a6","Carabina de caça",5500,"Dano 3d6 · Alcance 60 m · 8 tiros","Equilíbrio entre alcance e agilidade."],
+["armas","a7","Rifle de ferrolho",6800,"Dano 4d6 · Alcance 100 m · 5 tiros","Ação lenta, tiro potente."],
+["armas","a8","Rifle de precisão com luneta",12000,"Dano 4d6 · Alcance 200 m · 5 tiros · +mira","Bônus ao mirar com calma."],
+["armas","a9","Arma usada",1500,"Qualidade razoável · pode falhar","Reserva em condições razoáveis."],
+["armas","a10","Coldre de boa qualidade",350,"Saque rápido","Acesso à arma sem perder tempo."],
+["armas","a11","Kit de limpeza e manutenção",250,"Evita falhas da arma","Armas sujas travam na hora errada."],
+["municao","m1","Munição p/ pistola (caixa c/ 20)",75,"Dano da arma","Convencional."],
+["municao","m2","Munição p/ revólver (caixa c/ 20)",90,"Dano da arma","Convencional."],
+["municao","m3","Cartuchos p/ escopeta (caixa c/ 10)",65,"Dano da arma","Convencional."],
+["municao","m4","Munição p/ rifle (caixa c/ 10)",120,"Dano da arma","Convencional."],
+["municao","m5","Projéteis de prata (6 un.)",900,"Dano da arma · Eficaz contra criaturas vulneráveis à prata","Descubra a fraqueza antes de gastar."],
+["municao","m6","Cartuchos com sal grosso (6 un.)",400,"Dano reduzido · Repele e dispersa espíritos","Clássico contra aparições. (item novo)"],
+["municao","m7","Projéteis de ferro puro (6 un.)",650,"Dano da arma · Eficaz contra criaturas vulneráveis ao ferro","Para o que a prata não resolve."],
+["municao","m8","Munição incendiária (6 un.)",750,"Dano da arma + queimadura 1d6","Cuidado com o ambiente ao redor."],
+["municao","m9","Munição especial sob encomenda (6 un.)",1500,"A combinar com o mestre","Preço a partir de R$ 1.500."],
+["brancas","b1","Faca de caça reforçada",450,"Dano 1d6 · Corpo a corpo","Discreta e prática."],
+["brancas","b2","Facão pesado",300,"Dano 1d8 · Corpo a corpo","Barato e eficiente."],
+["brancas","b3","Machado de mão",350,"Dano 1d8 · Corpo a corpo / arremesso 6 m","Pode ser arremessado."],
+["brancas","b4","Pé de cabra reforçado",180,"Dano 1d6 · Abre portas e caixas","Ferramenta e arma ao mesmo tempo."],
+
+["brancas","b6","Espada de aço convencional",1800,"Dano 1d10 · Corpo a corpo","Pesada e chamativa."],
+["brancas","b7","Faca fabricada em prata",2500,"Dano 1d6 · Prata","Machuca criaturas vulneráveis à prata."],
+["brancas","b8","Lâmina de prata sob encomenda",3800,"Dano 1d8 · Prata","Feita para uso real."],
+["brancas","b9","Arma branca de ferro puro (encomenda)",1600,"Dano 1d8 · Ferro puro","Contra criaturas vulneráveis ao ferro."],
+["sobrenatural","s1","Sal grosso (saco de 5 kg)",45,"Barreira contra entidades","Linhas de sal nas portas e janelas."],
+["sobrenatural","s2","Barra de ferro puro",350,"Dano 1d6 · Ferro","Defesa contra criaturas vulneráveis ao ferro."],
+["sobrenatural","s3","Frasco de água benta",180,"Efeito contra certas entidades","Nem tudo reage a ela."],
+["sobrenatural","s4","Pó de prata",300,"Preparações específicas","Para misturas e aplicações."],
+["sobrenatural","s5","Limalha de ferro",160,"Barreiras e preparações","Espalhada em soleiras."],
+["sobrenatural","s6","Caixa de pregos de ferro",80,"Armadilhas e preparações","Item barato e versátil."],
+["sobrenatural","s7","Kit de armadilha demoníaca",700,"Contenção de demônios","Tinta, pincel e moldes de símbolos. (item novo)"],
+
+
+
+
+["investigacao","i1","Lanterna de alta potência",280,"Alcance de luz 30 m","Essencial no escuro."],
+["investigacao","i2","Gravador de voz portátil",250,"Registro de som","Depoimentos e fenômenos sonoros."],
+["investigacao","i3","Câmera digital resistente",850,"Registro de imagem","Cenas e evidências."],
+["investigacao","i4","Binóculos",450,"Observação a 300 m","Vigiar de longe."],
+["investigacao","i5","Rádio comunicador (par)",650,"Alcance 2 km","Comunicação entre caçadores."],
+["investigacao","i6","Kit de primeiros socorros avançado",450,"Cura inicial","Atendimento a ferimentos."],
+["investigacao","i7","Kit de arrombamento",900,"Abre fechaduras","Ferramentas de acesso."],
+["investigacao","i8","Kit de coleta de evidências",350,"Coleta amostras","Frascos e envelopes."],
+["investigacao","i9","Detector eletromagnético artesanal",1800,"Detecta anomalias EMF","Resultados podem ser inconclusivos."],
+["investigacao","i10","Gravador modificado para o paranormal",2500,"Registra fenômenos específicos","Equipamento adaptado."],
+["protecao","p1","Jaqueta reforçada para trabalho pesado",650,"Proteção leve · +1","Couro grosso e costuras reforçadas. Sem requisito."],
+["protecao","p2","Capacete resistente",350,"Proteção leve · +1","Protege a cabeça de pancadas e quedas. Sem requisito."],
+["protecao","p3","Colete de proteção convencional",1800,"Proteção média · +2 · Requer Carne 6","Colete balístico de uso civil."],
+["protecao","p4","Colete balístico com placas",4500,"Proteção pesada · +3 · Requer Carne 7 e Força 7","Pesado e desconfortável, mas aguenta o impacto. (item novo)"],
+["protecao","p5","Botas resistentes",450,"Utilidade","Firmeza em terreno ruim."],
+["protecao","p6","Luvas reforçadas",180,"Utilidade","Proteção para as mãos."],
+["protecao","p7","Óculos de proteção",120,"Utilidade","Contra poeira, estilhaços e respingos."],
+["protecao","p8","Máscara contra fumaça e partículas",280,"Utilidade","Respirar em locais contaminados."],
+["protecao","p9","Barraca para duas pessoas",600,"Utilidade","Abrigo na estrada."],
+["protecao","p10","Saco de dormir para clima frio",450,"Utilidade","Descanso decente no frio."],
+["protecao","p11","Kit de sobrevivência",550,"Utilidade","Fogo, corda, faca pequena e o básico."],
+["protecao","p12","Cantil metálico",120,"Utilidade","Resistente e durável."],
+["protecao","p13","Filtro portátil para água",350,"Utilidade","Água potável longe de tudo."],
+["protecao","p14","Cobertor térmico",45,"Utilidade","Leve e barato."],
+["protecao","p15","Kit de ferramentas de campo",650,"Utilidade · Reparos","Chaves, alicates e o necessário para consertos."],
+["protecao","p16","Rádio de emergência",400,"Utilidade","Notícias e chamados de socorro."],
+["arremessaveis","r1","Coquetel molotov",40,"Dano 2d6 + queimadura 1d6 · Raio 1 m · Alcance 15 m","Garrafa, pavio e combustível."],
+["arremessaveis","r2","Granada de fumaça",250,"Nuvem de 6 m por 1 min · Alcance 20 m","Cobertura para fuga ou aproximação."],
+["arremessaveis","r3","Granada de luz (atordoante)",400,"Cega e ensurda 1 rodada · Raio 5 m · Alcance 20 m","Não causa dano. Afeta aliados próximos."],
+["arremessaveis","r4","Dinamite (bastão)",90,"Dano 4d6 · Raio 3 m · Alcance 12 m","Pavio curto. Cuidado."],
+["arremessaveis","r5","Granada de fragmentação",1200,"Dano 6d6 · Raio 5 m · Alcance 20 m","Estilhaços de aço convencional."],
+["arremessaveis","r6","Granada incendiária",800,"Dano 4d6 + queimadura 1d6 · Raio 4 m · Alcance 20 m","Fogo espalhado pela área."],
+["arremessaveis","r7","Dinamite com estilhaços de prata",700,"Dano 4d6 · Raio 3 m · Prata","Variante de prata. (item novo)"],
+["arremessaveis","r8","Granada de fragmentação de prata",2400,"Dano 6d6 · Raio 5 m · Prata","Estilhaços de prata. (item novo)"],
+["arremessaveis","r9","Granada de fragmentação de ferro puro",1900,"Dano 6d6 · Raio 5 m · Ferro","Estilhaços de ferro puro. (item novo)"],
+["arremessaveis","r10","Granada de sal",600,"Dano 2d6 · Raio 4 m · Dispersa espíritos","Nuvem de sal consagrado. (item novo)"],
+["old","v1","Garras e presas de criatura menor",500,"Dificuldade ★☆☆☆☆ · Espólio","Provas simples de uma caçada tranquila."],
+["old","v2","Presas de ghoul (conjunto)",800,"Dificuldade ★☆☆☆☆ · Espólio","Cheiram mal, mas há colecionadores."],
+["old","v3","Objeto amaldiçoado recuperado",1800,"Dificuldade ★★☆☆☆ · Espólio","Entregue intacto e sem rastros do que o prendia."],
+["old","v4","Pelagem e garras de lobisomem",2000,"Dificuldade ★★★☆☆ · Espólio","Exige prata ou muita sorte."],
+["old","v5","Materiais de bruxa (bolsa completa)",2800,"Dificuldade ★★★☆☆ · Espólio","Ervas, ossos e objetos de ritual."],
+["old","v6","Presas de vampiro (par)",1200,"Dificuldade ★★★☆☆ · Espólio","Procuradas por colecionadores e artesãos."],
+["old","v12","Sangue de vampiro (frasco lacrado)",1500,"Dificuldade ★★★☆☆ · Espólio","Revendido a pesquisadores e usado em preparos."],
+["old","v13","Glândula de veneno de criatura",1000,"Dificuldade ★★☆☆☆ · Espólio","Precisa ser retirada com cuidado."],
+["old","v14","Coração de lobisomem conservado",3200,"Dificuldade ★★★★☆ · Espólio","Raro e muito usado em rituais."],
+["old","v15","Garras de wendigo (conjunto)",4500,"Dificuldade ★★★★☆ · Espólio","Difícil de conseguir sem perder gente."],
+["old","v7","Carcaça de metamorfo",3500,"Dificuldade ★★★★☆ · Espólio","Revendida inteira ou desmontada em peças."],
+["contratos","v8","Contrato: criatura menor",800,"Dificuldade ★★☆☆☆","Ex.: ghoul, espírito fraco, vampiro recém-transformado. Um caçador iniciante resolve."],
+["contratos","v9","Contrato: criatura perigosa",3000,"Dificuldade ★★★★☆","Ex.: ninho de vampiros, lobisomem veterano, bruxa com proteções, metamorfo infiltrado."],
+
+["contratos","v11","Contrato: ameaça de alto risco",8000,"Dificuldade ★★★★★","Ex.: demônio poderoso ou criatura que já matou caçadores experientes. Exige muito preparo."],
+["servicos","w1","Dentes de ghoul (conjunto)",60,"Dificuldade ★☆☆☆☆ · Espólio","Cheiram mal, mas sempre tem comprador."],
+["servicos","w2","Cinzas de espírito vingativo (frasco)",80,"Dificuldade ★★☆☆☆ · Espólio","Sobras de um espírito queimado. Usadas em rituais."],
+["servicos","w3","Ectoplasma de poltergeist (frasco)",100,"Dificuldade ★★☆☆☆ · Espólio","Instável. Precisa de recipiente selado."],
+["servicos","w4","Sangue de vampiro (frasco)",150,"Dificuldade ★★★☆☆ · Espólio","Revendido a pesquisadores e usado em preparos."],
+["servicos","w5","Garras de lobisomem (par)",180,"Dificuldade ★★★☆☆ · Espólio","Pedem prata ou muita sorte para conseguir."],
+["servicos","w6","Presas de vampiro (par)",200,"Dificuldade ★★★☆☆ · Espólio","Procuradas por colecionadores e artesãos."],
+["servicos","w7","Pelagem de lobisomem",220,"Dificuldade ★★★☆☆ · Espólio","Pele inteira, bem curtida."],
+["servicos","w8","Materiais de bruxa (bolsa)",300,"Dificuldade ★★★☆☆ · Espólio","Ervas, ossos e objetos de ritual."],
+["servicos","w9","Pelo chamuscado de cão infernal",350,"Dificuldade ★★★★☆ · Espólio","Raro. Quase ninguém vê o bicho e sobrevive.",2],
+["servicos","w10","Coração de lobisomem conservado",450,"Dificuldade ★★★★☆ · Espólio","Muito usado em rituais.",2],
+["servicos","w11","Ossos de rugaru (conjunto)",500,"Dificuldade ★★★★☆ · Espólio","O bicho se regenera, então só dá para pegar depois do fogo.",2],
+["servicos","w12","Glândula de kitsune",600,"Dificuldade ★★★★☆ · Espólio","Cobiçada por quem prepara remédios e rituais.",2],
+["servicos","w13","Garras de wendigo (conjunto)",650,"Dificuldade ★★★★☆ · Espólio","Difícil de conseguir sem perder gente.",2],
+["servicos","w14","Carcaça de metamorfo",700,"Dificuldade ★★★★☆ · Espólio","Revendida inteira ou desmontada em peças.",2],
+["servicos","w15","Pele de skinwalker curtida",800,"Dificuldade ★★★★☆ · Espólio","Exige cuidado para não estragar na retirada.",2],
+["servicos","w16","Sangue de djinn (frasco)",900,"Dificuldade ★★★★★ · Espólio","Extremamente raro. O dono quase não acredita quando vê.",2],
+["servicos","w17","Enxofre de possessão (frasco)",70,"Dificuldade ★★☆☆☆ · Espólio","Resíduo deixado por demônios.",3],
+["servicos","w18","Mão de zumbi preservada",120,"Dificuldade ★★☆☆☆ · Espólio","Conservada em sal. Pouca gente pergunta o motivo.",3],
+["servicos","w19","Escamas de sereia (punhado)",160,"Dificuldade ★★★☆☆ · Espólio","Brilham mesmo secas.",3],
+["servicos","w20","Dentes de crocotta (conjunto)",200,"Dificuldade ★★★☆☆ · Espólio","A criatura imita vozes humanas.",3],
+["servicos","w21","Espinhos de chupacabra",240,"Dificuldade ★★★☆☆ · Espólio","Usados em venenos e rituais.",3],
+["servicos","w22","Cinzas de shtriga (frasco)",260,"Dificuldade ★★★☆☆ · Espólio","Restos de uma bruxa que se alimenta de crianças.",3],
+["servicos","w23","Sangue de demônio (frasco selado)",280,"Dificuldade ★★★☆☆ · Espólio","Perigoso de manusear.",3],
+["servicos","w24","Dentes de vetala (conjunto)",330,"Dificuldade ★★★★☆ · Espólio","Criatura que se esconde entre os mortos.",3],
+["servicos","w25","Sangue de metamorfo (frasco)",380,"Dificuldade ★★★★☆ · Espólio","Muda de cor conforme a luz.",4],
+["servicos","w26","Coração de vampiro conservado",420,"Dificuldade ★★★★☆ · Espólio","Exige remoção cuidadosa.",4],
+["servicos","w27","Presa de cão infernal",520,"Dificuldade ★★★★☆ · Espólio","Difícil de conseguir sem ser visto.",4],
+["servicos","w28","Coração de wendigo",600,"Dificuldade ★★★★★ · Espólio","Prova de uma caçada que poucos terminam.",4],
+["servicos","w29","Ossos de djinn (conjunto)",700,"Dificuldade ★★★★★ · Espólio","Muito raros. Colecionadores pagam por discrição.",4],
+["servicos","w30","Coração de metamorfo",750,"Dificuldade ★★★★☆ · Espólio","Fica quente por dias depois da morte.",4],
+["servicos","w31","Garras de skinwalker (conjunto)",780,"Dificuldade ★★★★☆ · Espólio","Pedidas por quem estuda lendas indígenas.",4],
+["servicos","w32","Coração de kitsune",950,"Dificuldade ★★★★★ · Espólio","A peça mais valiosa que a loja aceita.",4],
+["servicospagos","z1","Encomenda de equipamento incomum",150,"Prazo: alguns dias · + custo do item","O dono procura o item. O valor dele é cobrado à parte."],
+["servicospagos","z2","Localização de fornecedor especializado",250,"Prazo: alguns dias","Um contato que vende o que a loja não tem."],
+["servicospagos","z3","Pesquisa inicial sobre criatura",300,"Prazo: 1 dia · Resultado não garantido","Pistas gerais: hábitos, fraqueza provável e casos parecidos."],
+["servicospagos","z4","Pesquisa aprofundada sobre criatura",800,"Prazo: vários dias · Resultado não garantido","Fontes antigas, relatos de caçadores e histórico completo."],
+["servicospagos","z5","Identificação de símbolo desconhecido",200,"Prazo: 1 dia","Traga foto ou decalque do símbolo."],
+["servicospagos","z6","Tradução de documento antigo",350,"Prazo: alguns dias","Pode revelar mais do que o caçador queria saber."],
+["servicospagos","z7","Avaliação de objeto ocultista",250,"Prazo: 1 dia","Diz se é autêntico, perigoso ou só um enfeite caro."],
+["servicospagos","z8","Busca por registro histórico específico",500,"Prazo: vários dias · Resultado não garantido","Jornais, arquivos e cartórios antigos."],
+["servicospagos","z9","Reparo de equipamento de campo (a partir de)",80,"Prazo: 1 dia","O preço sobe conforme o estrago."],
+["servicospagos","z10","Documentos falsos (identidade de agente)",300,"Passa em uma checagem rápida","Distintivo e cartão para abrir portas. Não resiste a investigação séria."],
+["servicospagos","z11","Acesso a registros policiais e de desaparecimentos",400,"Prazo: 1 a 2 dias","Arquivos que um civil não conseguiria ver."],
+["servicospagos","z12","Médico discreto (tratamento de ferimentos)",350,"Prazo: 1 noite","Sem perguntas e sem registro."],
+["servicospagos","z13","Quarto seguro por uma noite",150,"Local discreto e protegido com sal","Para quem precisa sumir por um tempo."],
+["servicospagos","z14","Entrega anônima (a partir de)",200,"Sem registro da compra · Local combinado","A compra não fica anotada e chega ao lugar combinado, sem você aparecer na loja."]
+];
+const cart={},custom=[];let cat="armas",pg=1;const PER=8,PAGES=c=>D.filter(d=>d[0]===c);
+const $=id=>document.getElementById(id);
+const brl=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+function tabs(){
+ $("tabs").innerHTML=Object.keys(CATS).map(k=>`<button class="tab ${k===cat?"on":""}" data-c="${k}">${CATS[k].n}</button>`).join("");
+ $("tabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{const ks=Object.keys(CATS),dr=ks.indexOf(b.dataset.c)>=ks.indexOf(cat)?1:-1;cat=b.dataset.c;pg=1;flip(dr);render()});
+}
+function items(){
+ $("cat-title").textContent=CATS[cat].n;$("intro").textContent=CATS[cat].i;
+ $("items").innerHTML=PAGES(cat).slice((pg-1)*PER,pg*PER).map(d=>`<div class="item"><div><h3>${d[2]}</h3><div class="stats">${d[4]}</div><p class="desc">${d[5]}</p></div><div class="buy"><div class="price">${(d[0]==="servicos"||d[0]==="contratos")?"+":""}${brl(d[3]).replace(",00","").replace(/\s/g," ")}</div><div class="qty"><button data-id="${d[1]}" data-d="-1" aria-label="Remover">−</button><span>${cart[d[1]]||0}</span><button data-id="${d[1]}" data-d="1" aria-label="Adicionar">+</button></div></div></div>`).join("");
+ const np=Math.ceil(PAGES(cat).length/PER);if(np>1)$("items").innerHTML+=`<div class="pager"><button class="pg" data-p="${pg-1}" ${pg===1?"disabled":""}>◀ Anterior</button><span>Página ${pg} de ${np}</span><button class="pg" data-p="${pg+1}" ${pg===np?"disabled":""}>Próxima ▶</button></div>`;
+ $("items").querySelectorAll(".pg").forEach(b=>b.onclick=()=>{const dr=Number(b.dataset.p)>pg?1:-1;pg=Number(b.dataset.p);flip(dr);render()});
+ $("items").querySelectorAll("button:not(.pg)").forEach(b=>b.onclick=()=>{
+  const id=b.dataset.id,n=(cart[id]||0)+Number(b.dataset.d);
+  const dd=Number(b.dataset.d);if(dd<0&&!(cart[id]||0))return;sfx(dd>0);if(n<=0)delete cart[id];else cart[id]=n;render();
+ });
+}
+function account(){
+ const m=parseFloat($("money").value)||0;let tot=0,cnt=0,h="";
+ D.forEach(d=>{const q=cart[d[1]];if(!q)return;const s=q*d[3]*((d[0]==="servicos"||d[0]==="contratos")?-1:1);tot+=s;cnt+=q;
+  h+=`<div class="line"><span>${q}× ${d[2]}</span><b>${s<0?"+":""}${brl(Math.abs(s))}</b><small>${(d[0]==="servicos"||d[0]==="contratos")?"Ganho":"Valor"}: ${brl(d[3])} cada</small></div>`});
+ custom.forEach((c,i)=>{tot+=c.p;cnt++;h+=`<div class="line"><span>${c.n}<button class="rm" data-x="${i}" aria-label="Remover">×</button></span><b>${brl(c.p)}</b><small>Item fora do catálogo</small></div>`});
+ $("lines").innerHTML=h||'<div class="empty">Nenhum item no pedido ainda.</div>';
+ $("lines").querySelectorAll(".rm").forEach(b=>b.onclick=()=>{custom.splice(Number(b.dataset.x),1);render()});
+ const left=m-tot;
+ $("hud").textContent=brl(m);$("count").textContent=cnt;$("total").textContent=brl(tot);$("saldoV").textContent=brl(left);
+ $("saldo").classList.toggle("neg",left<0);
+ $("warn").textContent=left<0?`Faltam ${brl(-left)} para fechar o pedido.`:"";
+ $("buy").disabled=left<0||cnt===0;
+}
+function render(){tabs();items();account()}
+$("money").addEventListener("input",account);
+let AC;function flip(dir=1){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime,sr=AC.sampleRate,n=Math.floor(sr*.5),b=AC.createBuffer(1,n,sr),d=b.getChannelData(0);let p=0;for(let i=0;i<n;i++){p=p*.6+(Math.random()*2-1)*.4;const x=i/n;d[i]=p*Math.sin(Math.PI*Math.pow(x,.6))*(1-x*.5)}const s=AC.createBufferSource(),f=AC.createBiquadFilter(),l=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type="bandpass";f.Q.value=.4;f.frequency.setValueAtTime(1200,t);f.frequency.exponentialRampToValueAtTime(2400,t+.35);l.type="lowpass";l.frequency.value=3200;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.35,t+.12);g.gain.exponentialRampToValueAtTime(.0001,t+.48);s.connect(f);f.connect(l);l.connect(g);g.connect(AC.destination);s.start(t)}catch(e){}
+const el=$("items");el.classList.remove("turn");void el.offsetWidth;el.classList.add("turn");setTimeout(()=>el.classList.remove("turn"),500)}
+function sfx(up){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;[0,.06].forEach((o,i)=>{const os=AC.createOscillator(),g=AC.createGain();os.type="sine";os.frequency.value=up?[1900,2500][i]:[2300,1500][i];g.gain.setValueAtTime(.0001,t+o);g.gain.exponentialRampToValueAtTime(.05,t+o+.008);g.gain.exponentialRampToValueAtTime(.0001,t+o+.16);os.connect(g);g.connect(AC.destination);os.start(t+o);os.stop(t+o+.2)})}catch(e){}}
+function total(){let t=0;D.forEach(d=>{t+=(cart[d[1]]||0)*d[3]*((d[0]==="servicos"||d[0]==="contratos")?-1:1)});custom.forEach(c=>{t+=c.p});return t}
+function coin(){try{const A=new (window.AudioContext||window.webkitAudioContext)(),t0=A.currentTime;[0,.07,.14,.23,.32,.42].forEach((o,i)=>{const os=A.createOscillator(),g=A.createGain();os.type="triangle";os.frequency.value=1700+i*230+(i%2)*450;g.gain.setValueAtTime(.0001,t0+o);g.gain.exponentialRampToValueAtTime(.25,t0+o+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+o+.35);os.connect(g);g.connect(A.destination);os.start(t0+o);os.stop(t0+o+.4)})}catch(e){}}
+$("cadd").onclick=()=>{custom.push({n:$("cname").value.trim()||"Item fora do catálogo",p:Math.max(0,parseFloat($("cprice").value)||0)});$("cname").value="";$("cprice").value="";render()};
+$("buy").onclick=()=>{const m=parseFloat($("money").value)||0,t=total();if(t>m||!(Object.keys(cart).length+custom.length))return;$("money").value=Math.round((m-t)*100)/100;for(const k in cart)delete cart[k];custom.length=0;coin();render();$("warn").textContent=t<0?"Pagamento recebido. Bom trabalho.":"Compra finalizada. Boa caçada."};
+$("clear").onclick=()=>{for(const k in cart)delete cart[k];custom.length=0;render()};
+render();
+</script>
+</body>
+</html>

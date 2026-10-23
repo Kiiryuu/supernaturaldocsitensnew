@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sala do Manual</title>
+<style>
+html,body{margin:0;height:100%;background:#050505;overflow:hidden;font-family:Georgia,'Times New Roman',serif;user-select:none;-webkit-user-select:none;touch-action:none}
+canvas{display:block}
+.ov{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;box-sizing:border-box;z-index:10}
+#wait{background:#000d}
+#wait h1{margin:0;font-size:clamp(28px,7vw,64px);color:#ff2a2a;letter-spacing:.06em;text-shadow:0 0 24px #f00}
+#wait p{color:#9a8a7a;font-size:clamp(13px,2.4vw,18px);margin:14px 0 0}
+#wait button{margin-top:26px;font:13px Georgia,serif;color:#8a7a6a;background:none;border:1px solid #4a3a3a;padding:8px 14px;cursor:pointer;opacity:.7}
+#hint{position:fixed;left:0;right:0;bottom:18px;text-align:center;color:#8a7758;font-style:italic;font-size:clamp(13px,2.2vw,17px);letter-spacing:.05em;pointer-events:none;transition:opacity 1s;text-shadow:0 0 8px #000}
+#msg{position:fixed;left:0;right:0;bottom:14%;text-align:center;color:#d6c493;font-style:italic;font-size:clamp(18px,3.4vw,30px);letter-spacing:.04em;pointer-events:none;opacity:0;transition:opacity .35s;text-shadow:0 0 14px #000,0 0 4px #000;z-index:5}
+#vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,#000c 100%)}
+</style></head><body>
+<div id="vig"></div>
+<div id="msg"></div>
+<div id="hint">Há uma alavanca na parede…</div>
+<div id="wait" class="ov"><h1>Espere o mestre narrar</h1><p>Nesta sala não há cronômetro.</p><button id="cont">mestre: continuar (Enter)</button></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const T=THREE,PI=Math.PI,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+// ================= CONFIGURAÇÃO =================
+// Mesma ordem do módulo de símbolos (Pad_Simbolos.html). Se mudar lá, mude aqui.
+const ORDEM=['Ϙ','Ѧ','ƛ','Җ','Ӝ','★','☆','¿','¶','Ψ','Ѯ','б','Ӭ','©','Ѣ','Ω'];
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rand=rng(11);
+// Medidas da sala
+const RW=9.5,RF=-6.5,RC=6.5;                 // meia-largura, chão, teto
+const FONT='"Segoe UI Symbol","Noto Sans Symbols2","Noto Sans Symbols","Noto Sans","DejaVu Sans","Arial Unicode MS",Georgia,serif';
+// ================= RENDER =================
+const R=new T.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(devicePixelRatio,2));R.setClearColor(0x050505);R.localClippingEnabled=true;document.body.prepend(R.domElement);
+const scene=new T.Scene();scene.fog=new T.FogExp2(0x050505,.018);
+const cam=new T.PerspectiveCamera(40,1,.1,120);let mx=0,my=0,cx=0,cy=0;
+function fit(){R.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();const t=Math.tan(20*PI/180);cam.userData.d=Math.max(7.2/t,(RW+.3)/(cam.aspect*t))}
+addEventListener('resize',fit);fit();
+// ================= TEXTURAS =================
+function mk(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return[c,c.getContext('2d')]}
+function noise(x,n,a){for(let i=0;i<n;i++){const v=Math.random()<.5?0:255;x.fillStyle=`rgba(${v},${v},${v},${Math.random()*a})`;x.fillRect(Math.random()*x.canvas.width,Math.random()*x.canvas.height,1.6,1.6)}}
+const softTex=(()=>{const[c,x]=mk(128,128),g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,255,.95)');g.addColorStop(.45,'rgba(255,255,255,.3)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,128,128);return new T.CanvasTexture(c)})();
+// pedra de parede (blocos), repete sem emenda
+function stoneTile(){const S=1024,[c,x]=mk(S,S);x.fillStyle='#16140f';x.fillRect(0,0,S,S);
+ const wrap=fn=>{for(const dx of[-S,0,S])for(const dy of[-S,0,S])fn(dx,dy)};
+ const RH=S/8;
+ for(let r=0;r<8;r++){const ws=[];let sum=0;while(sum<S){const w=170+rand()*140;ws.push(w);sum+=w}const k=S/sum;let px=rand()*S;
+  for(const w0 of ws){const w=w0*k,t=60+rand()*34,y=r*RH,xx=px;
+   wrap((dx,dy)=>{const g=x.createLinearGradient(0,y+dy,0,y+RH+dy);g.addColorStop(0,`rgb(${t+12},${t+8},${t-2})`);g.addColorStop(1,`rgb(${t-10},${t-12},${t-20})`);x.fillStyle=g;x.fillRect(xx+dx+4,y+dy+4,w-8,RH-8)});
+   px+=w}}
+ for(let i=0;i<46;i++){const bx=Math.random()*S,by=Math.random()*S,r=30+Math.random()*90,dark=Math.random()<.65;wrap((dx,dy)=>{const g=x.createRadialGradient(bx+dx,by+dy,0,bx+dx,by+dy,r);g.addColorStop(0,dark?'rgba(0,0,0,.2)':'rgba(255,240,210,.07)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(bx+dx-r,by+dy-r,r*2,r*2)})}
+ for(let i=0;i<26;i++){x.strokeStyle='rgba(0,0,0,.45)';x.lineWidth=1+Math.random();let a=Math.random()*S,b=Math.random()*S;x.beginPath();x.moveTo(a,b);for(let j=0;j<4;j++){a+=(Math.random()-.5)*50;b+=(Math.random()-.2)*45;x.lineTo(a,b)}x.stroke()}
+ noise(x,16000,.1);const t=new T.CanvasTexture(c);t.wrapS=t.wrapT=T.RepeatWrapping;t.anisotropy=4;return t}
+const STONE=stoneTile();
+function stoneMat(rx,ry,bs,tint){const t=STONE.clone();t.needsUpdate=true;t.repeat.set(rx,ry);return new T.MeshStandardMaterial({map:t,bumpMap:t,bumpScale:bs||1.4,roughness:.95,metalness:0,color:tint||0xffffff})}
+// ================= SALA =================
+const ROOMD=30;
+function wall(w,h,rx,ry,px,py,pz,rotX,rotY){const m=new T.Mesh(new T.PlaneGeometry(w,h),stoneMat(w/6,h/6,1.4));m.position.set(px,py,pz);m.rotation.set(rotX||0,rotY||0,0);scene.add(m);return m}
+wall(RW*2,RC-RF,0,0,0,(RC+RF)/2,0);                                         // fundo
+wall(ROOMD,RC-RF,0,0,-RW,(RC+RF)/2,ROOMD/2,0,PI/2);                         // esquerda
+wall(ROOMD,RC-RF,0,0,RW,(RC+RF)/2,ROOMD/2,0,-PI/2);                         // direita
+wall(RW*2,ROOMD,0,0,0,RF,ROOMD/2,-PI/2,0);                                  // chão
+wall(RW*2,ROOMD,0,0,0,RC,ROOMD/2,PI/2,0);                                   // teto
+// ---- buracos pretos (só aparecem depois que a alavanca é acionada) ----
+const holeBlack=new T.MeshBasicMaterial({color:0x000000}),rimMat=stoneMat(1,1,1,0x8a8478),smudgeMat=new T.MeshBasicMaterial({map:softTex,color:0x000000,transparent:true,opacity:.55,depthWrite:false});
+const HOLES=[];
+function hole(px,py,pz,nx,ny,nz,r,back){const g=new T.Group();g.position.set(px,py,pz);
+ const sm=new T.Mesh(new T.PlaneGeometry(r*4.2,r*4.2),smudgeMat);sm.position.z=.004;g.add(sm);
+ const rim=new T.Mesh(new T.TorusGeometry(r*1.04,r*.16,8,32),rimMat);rim.position.z=.01;g.add(rim);
+ const d=new T.Mesh(new T.CircleGeometry(r,32),holeBlack);d.position.z=.012;g.add(d);
+ g.lookAt(px+nx,py+ny,pz+nz);g.visible=false;g.scale.setScalar(.001);scene.add(g);
+ HOLES.push({g,back:!!back,y:py,delay:.5+rand()*3,s:0,on:false})}
+const jit=a=>(rand()-.5)*a,hr=()=>.28+rand()*.34;
+// paredes laterais (a esquerda tem o cano entrando na parede)
+for(let zi=0;zi<5;zi++)for(let yi=0;yi<7;yi++){const z=.9+zi*1.9+jit(.4),y=RF+.9+yi*1.8+jit(.4);
+ if(!(y>3.7&&z<2.9))hole(-RW,y,z,1,0,0,hr());
+ hole(RW,y+jit(.3),z+jit(.3),-1,0,0,hr())}
+// chão (evita a poça embaixo da goteira)
+for(let xi=0;xi<9;xi++)for(let zi=0;zi<5;zi++){const x=-8+xi*2+jit(.5),z=1.2+zi*2+jit(.5);if(Math.hypot(x+8.4,z-.95)<2.5)continue;hole(x,RF,z,0,1,0,hr())}
+// teto (evita o cano que sobe)
+for(let xi=0;xi<9;xi++)for(let zi=0;zi<5;zi++){const x=-8+xi*2+jit(.5),z=1.2+zi*2+jit(.5);if(Math.hypot(x-8.5,z-.95)<1.7)continue;hole(x,RC,z,0,-1,0,hr()*.85)}
+// ================= CANO D'ÁGUA (no alto da sala) =================
+const rustTex=(()=>{const[c,x]=mk(256,256);x.fillStyle='#4a3b30';x.fillRect(0,0,256,256);for(let i=0;i<120;i++){const px=Math.random()*256,py=Math.random()*256,r=6+Math.random()*30,g=x.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,Math.random()<.6?'rgba(140,70,25,.35)':'rgba(20,14,10,.4)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(px-r,py-r,r*2,r*2)}
+ for(let i=0;i<30;i++){x.fillStyle=`rgba(10,8,6,${Math.random()*.35})`;x.fillRect(Math.random()*256,0,1+Math.random()*3,256)}noise(x,6000,.12);const t=new T.CanvasTexture(c);t.wrapS=t.wrapT=T.RepeatWrapping;return t})();
+const pipeMat=new T.MeshStandardMaterial({map:rustTex,bumpMap:rustTex,bumpScale:1,metalness:.55,roughness:.62}),ironMat=new T.MeshStandardMaterial({color:0x2b2825,metalness:.8,roughness:.5});
+const PY=5.1,PZ=.95,PR=.5;
+const pipe=new T.Mesh(new T.CylinderGeometry(PR,PR,RW+7.6,24,1,false),pipeMat);pipe.rotation.z=PI/2;pipe.position.set((-RW+7.6)/2,PY,PZ);scene.add(pipe);
+const elbow=new T.Mesh(new T.TorusGeometry(.9,PR,14,24,PI/2),pipeMat);elbow.position.set(7.6,PY+.9,PZ);elbow.rotation.z=-PI/2;scene.add(elbow);
+const rise=new T.Mesh(new T.CylinderGeometry(PR,PR,.7,24),pipeMat);rise.position.set(8.5,PY+.9+.3,PZ);scene.add(rise);
+function flange(x){const f=new T.Mesh(new T.CylinderGeometry(PR+.2,PR+.2,.22,24),ironMat);f.rotation.z=PI/2;f.position.set(x,PY,PZ);scene.add(f);
+ for(let i=0;i<8;i++){const a=i/8*PI*2,b=new T.Mesh(new T.CylinderGeometry(.07,.07,.3,8),ironMat);b.rotation.z=PI/2;b.position.set(x,PY+Math.cos(a)*(PR+.1),PZ+Math.sin(a)*(PR+.1));scene.add(b)}}
+[-8.4,-.4,5.2].forEach(flange);
+[-4.4,2.4,6.6].forEach(x=>{const p=new T.Mesh(new T.BoxGeometry(.6,1.2,.6),ironMat);p.position.set(x,PY,.45);scene.add(p);const s=new T.Mesh(new T.TorusGeometry(PR+.06,.08,8,24),ironMat);s.position.set(x,PY,PZ);s.rotation.y=PI/2;scene.add(s)});
+// manômetro
+const gaugeTex=(()=>{const[c,x]=mk(256,256);x.fillStyle='#d8cfb8';x.beginPath();x.arc(128,128,126,0,PI*2);x.fill();x.strokeStyle='#111';x.lineWidth=5;x.beginPath();x.arc(128,128,118,0,PI*2);x.stroke();
+ for(let i=0;i<=10;i++){const a=PI*.75+i/10*PI*1.5;x.beginPath();x.moveTo(128+Math.cos(a)*92,128+Math.sin(a)*92);x.lineTo(128+Math.cos(a)*112,128+Math.sin(a)*112);x.lineWidth=i%5?3:6;x.stroke()}
+ x.strokeStyle='#8a1a12';x.lineWidth=7;x.beginPath();x.moveTo(128,128);const a=PI*.75+.82*PI*1.5;x.lineTo(128+Math.cos(a)*84,128+Math.sin(a)*84);x.stroke();noise(x,2500,.25);return new T.CanvasTexture(c)})();
+const gauge=new T.Group();gauge.position.set(-2.4,PY,PZ+PR+.05);
+const gb=new T.Mesh(new T.CylinderGeometry(.42,.42,.22,24).rotateX(PI/2),ironMat),gf=new T.Mesh(new T.CircleGeometry(.36,24),new T.MeshBasicMaterial({map:gaugeTex,color:0xaaaaaa}));gf.position.z=.12;gauge.add(gb,gf);scene.add(gauge);
+// ================= VAZAMENTO (goteira) =================
+const DX=-8.4,DY0=PY-PR-.05;
+const streakTex=(()=>{const[c,x]=mk(64,512),g=x.createLinearGradient(0,0,0,512);g.addColorStop(0,'rgba(0,0,0,.65)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(14,0,36,512);for(let i=0;i<10;i++){x.fillStyle=`rgba(0,0,0,${.1+Math.random()*.2})`;x.fillRect(6+Math.random()*50,0,2+Math.random()*4,200+Math.random()*312)}return new T.CanvasTexture(c)})();
+const streak=new T.Mesh(new T.PlaneGeometry(1.4,9.5),new T.MeshBasicMaterial({map:streakTex,transparent:true,depthWrite:false}));streak.position.set(DX,DY0-4.7,.16);scene.add(streak);
+const puddle=new T.Mesh(new T.CircleGeometry(1.3,32),new T.MeshStandardMaterial({color:0x07090c,roughness:.12,metalness:.5}));puddle.rotation.x=-PI/2;puddle.position.set(DX,RF+.012,PZ);scene.add(puddle);
+const drop=new T.Mesh(new T.SphereGeometry(.09,10,8),new T.MeshBasicMaterial({color:0xa6cdf0,transparent:true,opacity:.85}));drop.position.set(DX,DY0,PZ);scene.add(drop);
+const ripples=[0,1].map(()=>{const m=new T.Mesh(new T.RingGeometry(.9,1,32),new T.MeshBasicMaterial({color:0x8ea9c0,transparent:true,opacity:0,depthWrite:false,side:T.DoubleSide}));m.rotation.x=-PI/2;m.position.set(DX,RF+.02,PZ);scene.add(m);return{m,t:9}});
+let dripPh='grow',dripT=0,dripY=DY0,dripV=0,rip=0;
+// ================= TOCHA =================
+const torch=new T.Group();torch.position.set(-6.9,1.1,0);scene.add(torch);
+const tw=new T.Mesh(new T.CylinderGeometry(.14,.1,1.4,8),new T.MeshStandardMaterial({color:0x2a1c12,roughness:.9}));tw.position.set(0,0,.75);tw.rotation.x=-.35;torch.add(tw);
+const tc=new T.Mesh(new T.CylinderGeometry(.3,.16,.4,12,1,true),ironMat);tc.position.set(0,.62,.98);torch.add(tc);
+const tb=new T.Mesh(new T.BoxGeometry(.5,.25,.25),ironMat);tb.position.set(0,-.2,.3);torch.add(tb);
+const flameMat=new T.SpriteMaterial({map:softTex,color:0xff7a22,blending:T.AdditiveBlending,transparent:true,depthWrite:false}),flameMat2=new T.SpriteMaterial({map:softTex,color:0xffd060,blending:T.AdditiveBlending,transparent:true,depthWrite:false});
+const flame=new T.Sprite(flameMat),flame2=new T.Sprite(flameMat2);flame.position.set(0,1.05,1);flame2.position.set(0,.95,1.02);torch.add(flame,flame2);
+const torchLight=new T.PointLight(0xff9a48,1.7,34);torchLight.position.set(-6.4,2.2,2.3);scene.add(torchLight);
+scene.add(new T.AmbientLight(0x6a6a80,.5));
+const fill=new T.DirectionalLight(0xb8b8d0,.28);fill.position.set(0,2,10);scene.add(fill);
+// ================= MANUAL: A PAREDE INTEIRA TALHADA =================
+const COLS=12,ROWS=7,GT=4.5,CW=RW*2/COLS,CH=(GT-RF)/ROWS,PX=160;
+const cellX=c=>-RW+(c+.5)*CW,cellY=r=>GT-(r+.5)*CH;
+const blocked=(c,r)=>(c>=10&&r>=1&&r<=5)||(c===1&&(r===1||r===2));   // atrás da alavanca e da tocha
+// símbolos "enganadores" (não existem no pad) — evitei os parecidos com os do pad
+const DECOYS=['Σ','Δ','Π','Φ','Θ','Γ','Ђ','Ћ','Љ','Њ','Ѥ','Ѻ','ƒ','Ʒ','Ǝ','Ɣ','Ɲ','Ɓ','♠','♣','♦','☾','☼','✂','✈','✿','❖','☠','♞','♜','❦','☸','⚙','♪','†','‡','✠','♁','☿','♄','♆','⌘','⚖','⚔','☘','♛','♝','⚘'];
+const rl=rng(31),shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rl()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const free=[];for(let c=0;c<COLS;c++)for(let r=0;r<ROWS;r++)if(!blocked(c,r))free.push({c,r});
+// os 16 símbolos do pad: lidos de cima para baixo, coluna por coluna, da esquerda para a direita
+const correct=shuf(free.filter(k=>k.c!==0)).slice(0,16).sort((a,b)=>(a.c*ROWS+a.r)-(b.c*ROWS+b.r));
+const GLY=[];correct.forEach((k,i)=>GLY.push({ch:ORDEM[i],c:k.c,r:k.r}));
+const rest=shuf(free.filter(k=>!correct.includes(k))),holeCells=rest.slice(0,12),decoyCells=rest.slice(12),pool=shuf(DECOYS);
+decoyCells.forEach((k,i)=>GLY.push({ch:pool[i%pool.length],c:k.c,r:k.r}));
+GLY.forEach(g=>{g.x=(cellX(g.c)+RW)*PX+(rl()-.5)*22;g.y=(RC-cellY(g.r))*PX+(rl()-.5)*22;g.rot=(rl()-.5)*.09});
+holeCells.forEach(k=>hole(cellX(k.c),cellY(k.r),.035,0,0,1,.46+rl()*.1,true));
+function slabTex(){const W=RW*2*PX,H=(RC-RF)*PX,[c,x]=mk(W,H),[bc,bx]=mk(W/2,H/2);
+ const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#756e61');g.addColorStop(.5,'#5d574c');g.addColorStop(1,'#6b655a');x.fillStyle=g;x.fillRect(0,0,W,H);
+ bx.fillStyle='#c4c4c4';bx.fillRect(0,0,W/2,H/2);
+ for(let i=0;i<150;i++){const px=Math.random()*W,py=Math.random()*H,r=70+Math.random()*220,gg=x.createRadialGradient(px,py,0,px,py,r);gg.addColorStop(0,Math.random()<.6?'rgba(0,0,0,.16)':'rgba(255,240,210,.07)');gg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=gg;x.fillRect(px-r,py-r,r*2,r*2)}
+ noise(x,140000,.1);
+ for(let i=0;i<30;i++){x.strokeStyle='rgba(0,0,0,.4)';x.lineWidth=1.5+Math.random()*1.5;let a=Math.random()*W,b=Math.random()*H;x.beginPath();x.moveTo(a,b);for(let j=0;j<7;j++){a+=(Math.random()-.5)*140;b+=(Math.random()-.5)*140;x.lineTo(a,b)}x.stroke()}
+ const draw=ctx=>{ctx.lineJoin='round';ctx.lineWidth=12;ctx.strokeRect(34,34,W-68,H-68);ctx.lineWidth=5;ctx.strokeRect(60,60,W-120,H-120);
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 200px '+FONT;
+  GLY.forEach(q=>{ctx.save();ctx.translate(q.x,q.y);ctx.rotate(q.rot);ctx.fillText(q.ch,0,10);ctx.restore()})};
+ const carve=(ctx,ox,oy,col,blur,sc)=>{ctx.save();ctx.scale(sc,sc);ctx.translate(ox,oy);ctx.fillStyle=col;ctx.strokeStyle=col;if(blur){ctx.shadowColor='#000';ctx.shadowBlur=blur}draw(ctx);ctx.restore()};
+ carve(x,3,3,'rgba(205,195,170,.5)',0,1);carve(x,0,0,'#14100c',0,1);carve(bx,0,0,'#000',6,.5);
+ const t=new T.CanvasTexture(c),b=new T.CanvasTexture(bc);t.anisotropy=b.anisotropy=8;return{map:t,bump:b}}
+const sl=slabTex();
+const slab=new T.Mesh(new T.PlaneGeometry(RW*2,RC-RF),new T.MeshStandardMaterial({map:sl.map,bumpMap:sl.bump,bumpScale:3.2,roughness:.92}));slab.position.set(0,(RC+RF)/2,.03);scene.add(slab);
+// porta de pedra: parece a própria parede e cobre o manual inteiro; sobe quando o mestre continua
+const DH=RC-RF,clip=new T.Plane(new T.Vector3(0,-1,0),RC);
+const door=new T.Group();scene.add(door);
+const doorMat=stoneMat(RW*2/6,DH/6,1.4);doorMat.clippingPlanes=[clip];
+const doorBody=new T.Mesh(new T.BoxGeometry(RW*2-.02,DH,.1),doorMat);doorBody.position.set(0,(RC+RF)/2,.09);door.add(doorBody);
+// ================= ALAVANCA =================
+const LX=7.7,LY=-.8;
+const lever=new T.Group();lever.position.set(LX,LY,.2);scene.add(lever);
+const plate=new T.Mesh(new T.BoxGeometry(3.2,5.6,.3),ironMat);plate.position.z=.15;lever.add(plate);
+[[-1.3,-2.5],[1.3,-2.5],[-1.3,2.5],[1.3,2.5]].forEach(([a,b])=>{const rv=new T.Mesh(new T.SphereGeometry(.14,8,6),new T.MeshStandardMaterial({color:0x5a554e,metalness:.8,roughness:.4}));rv.position.set(a,b,.33);lever.add(rv)});
+const groove=new T.Mesh(new T.RingGeometry(1.9,2.15,40,1,-PI*.38,PI*.72),new T.MeshBasicMaterial({color:0x050505,side:T.DoubleSide}));groove.position.z=.32;lever.add(groove);
+const hub=new T.Mesh(new T.CylinderGeometry(.42,.42,.3,20).rotateX(PI/2),new T.MeshStandardMaterial({color:0x6a665e,metalness:.85,roughness:.35}));hub.position.z=.45;lever.add(hub);
+const arm=new T.Group();arm.position.z=.62;lever.add(arm);
+const brass=new T.MeshStandardMaterial({color:0x8a6a2e,metalness:.85,roughness:.35});
+const rod=new T.Mesh(new T.CylinderGeometry(.11,.13,2.3,12),new T.MeshStandardMaterial({color:0x7a766e,metalness:.85,roughness:.35}));rod.position.y=1.15;arm.add(rod);
+const ball=new T.Mesh(new T.SphereGeometry(.34,18,14),brass);ball.position.y=2.4;arm.add(ball);
+const stub=new T.Mesh(new T.CylinderGeometry(.1,.1,.6,10),brass);stub.position.y=-.3;arm.add(stub);
+const ball2=new T.Mesh(new T.SphereGeometry(.2,12,10),brass);ball2.position.y=-.65;arm.add(ball2);
+const leverHit=new T.Mesh(new T.BoxGeometry(3.4,5.8,1),new T.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));leverHit.position.set(LX,LY,.7);scene.add(leverHit);
+const A_UP=-.5,A_DOWN=-2.75;let leverA=A_UP,leverV=0,leverGoal=A_UP;
+// ================= POEIRA =================
+const NP=360,dPos=new Float32Array(NP*3),dCol=new Float32Array(NP*3),dVel=new Float32Array(NP*3),dLife=new Float32Array(NP);
+for(let i=0;i<NP;i++){dPos[i*3+1]=-100}
+const dGeo=new T.BufferGeometry();dGeo.setAttribute('position',new T.BufferAttribute(dPos,3));dGeo.setAttribute('color',new T.BufferAttribute(dCol,3));
+scene.add(new T.Points(dGeo,new T.PointsMaterial({size:.55,map:softTex,vertexColors:true,transparent:true,blending:T.AdditiveBlending,depthWrite:false})));
+let dn=0;function emit(x,y){const i=dn++%NP;dPos[i*3]=x;dPos[i*3+1]=y;dPos[i*3+2]=.55+Math.random()*.4;dVel[i*3]=(Math.random()-.5)*.5;dVel[i*3+1]=-.4-Math.random()*.9;dVel[i*3+2]=Math.random()*.3;dLife[i]=1}
+// ================= SOM =================
+let AC=null,master=null,nb=null;
+function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();master=AC.createGain();master.gain.value=.85;master.connect(AC.destination);nb=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;ambient()}catch(e){AC=null}}if(AC&&AC.state==='suspended')AC.resume()}
+function env(g,t,a,d,v){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d)}
+function tone(f,d,type,v,f2,delay){if(!AC)return;const t=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);env(g,t,.006,d,v);o.connect(g);g.connect(master);o.start(t);o.stop(t+d+.1)}
+function nz(d,f,q,v,type,delay,f2){if(!AC)return;const t=AC.currentTime+(delay||0),s=AC.createBufferSource(),fl=AC.createBiquadFilter(),g=AC.createGain();s.buffer=nb;fl.type=type||'bandpass';fl.frequency.setValueAtTime(f,t);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t+d);fl.Q.value=q;env(g,t,Math.min(.01,d/4),d,v);s.connect(fl);fl.connect(g);g.connect(master);s.start(t,Math.random());s.stop(t+d+.1)}
+const sfx={
+ lever(){nz(.06,900,3,.5);tone(90,.28,'square',.12,50);nz(.14,300,1,.45,'lowpass',.08);tone(520,.5,'triangle',.05,null,.1)},
+ grind(d){nz(d,220,.8,.4,'lowpass',0,80);tone(44,d,'sawtooth',.1,34);for(let i=0;i<7;i++)nz(.06,500+Math.random()*400,2,.18,'bandpass',i*d/7)},
+ stuck(){nz(.05,1200,3,.45);tone(200,.14,'square',.14,110);nz(.1,260,1,.35,'lowpass',.05);tone(380,.25,'triangle',.05,null,.08)},
+ drip(){tone(1500,.07,'sine',.14,800);tone(1100,.1,'sine',.06,600,.13);nz(.03,3000,2,.05)}};
+function ambient(){const mk=(f,v)=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(master);o.start()};mk(48,.045);mk(48.7,.03);mk(72,.012)}
+// ================= JOGO =================
+const $=id=>document.getElementById(id);
+// closed | pulling | wait | opening | open   (depois de aberta, a alavanca não volta)
+let state='closed',coverP=0,coverGoal=0,bump=0,openT=0,msgTO=0;
+const DOORT=3.8,ease=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+function onLever(){
+ if(state==='closed'){state='pulling';leverGoal=A_DOWN;sfx.lever();$('hint').style.opacity=0;setTimeout(()=>{if(state==='pulling'){state='wait';$('wait').style.display='flex'}},750)}
+ else if(state==='opening'||state==='open'){leverV+=5;sfx.stuck();const m=$('msg');m.textContent='Parece que a alavanca está presa';m.style.opacity=1;clearTimeout(msgTO);msgTO=setTimeout(()=>m.style.opacity=0,2400)}}
+function release(){if(state!=='wait')return;$('wait').style.display='none';state='opening';coverGoal=1;sfx.grind(DOORT);tone(55,2.2,'sine',.22,30)}
+$('cont').onclick=release;
+addEventListener('keydown',e=>{if(e.key==='Enter')release()});
+// ================= INTERAÇÃO =================
+const ray=new T.Raycaster(),mp=new T.Vector2();
+function overLever(e){mp.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1);ray.setFromCamera(mp,cam);return ray.intersectObject(leverHit).length>0}
+R.domElement.addEventListener('pointermove',e=>{mx=e.clientX/innerWidth*2-1;my=e.clientY/innerHeight*2-1;R.domElement.style.cursor=((state==='closed'||state==='opening'||state==='open')&&overLever(e))?'pointer':'default'});
+R.domElement.addEventListener('pointerdown',e=>{ac();if(overLever(e))onLever()});
+// ================= LOOP =================
+let last=performance.now(),tt=0;
+function frame(now){requestAnimationFrame(frame);const dt=Math.min(.05,(now-last)/1000);last=now;tt+=dt;
+ // alavanca (mola)
+ leverV+=((leverGoal-leverA)*130-leverV*12)*dt;leverA+=leverV*dt;arm.rotation.z=leverA;
+ // porta de pedra (sobe e some dentro do teto)
+ if(state==='opening'||state==='open')openT+=dt;
+ if(coverP!==coverGoal){coverP=Math.min(coverGoal,coverP+dt/DOORT);bump=Math.max(bump,.4);
+  const by=door.position.y+RF;for(let k=0;k<4;k++)emit((Math.random()-.5)*(RW*2-.4),by);
+  if(coverP===coverGoal){state='open';bump=Math.max(bump,.8)}}
+ door.position.y=ease(coverP)*DH;
+ // buracos aparecem quando a alavanca é acionada
+ const bottom=RF+door.position.y;
+ HOLES.forEach(h=>{if(!h.on&&(h.back?bottom>h.y+.4:openT>h.delay)){h.on=true;h.g.visible=true}
+  if(h.on&&h.s<1){h.s=Math.min(1,h.s+dt*2.6);const e=1-Math.pow(1-h.s,3);h.g.scale.setScalar(Math.max(.001,e))}});
+ // poeira
+ for(let i=0;i<NP;i++){if(dLife[i]>0){dLife[i]-=dt*.45;dPos[i*3]+=dVel[i*3]*dt;dPos[i*3+1]+=dVel[i*3+1]*dt;dPos[i*3+2]+=dVel[i*3+2]*dt;dVel[i*3+1]-=dt*.4;const l=Math.max(0,dLife[i])*.4;dCol[i*3]=.62*l;dCol[i*3+1]=.55*l;dCol[i*3+2]=.45*l;if(dLife[i]<=0)dPos[i*3+1]=-100}}
+ dGeo.attributes.position.needsUpdate=true;dGeo.attributes.color.needsUpdate=true;
+ // tocha
+ const fl=.85+.15*Math.sin(tt*13)+.1*Math.sin(tt*31+1)+(Math.random()-.5)*.12;
+ torchLight.intensity=1.7*fl;flame.scale.set(1.5*fl,2.3*fl,1);flame2.scale.set(.8*fl,1.3*fl,1);
+ // goteira
+ if(dripPh==='grow'){dripT+=dt;const s=clamp(dripT/1.1,0,1);drop.position.set(DX,DY0-.02-s*.08,PZ);drop.scale.set(s,s*(1+s*.3),s);if(dripT>=1.1){dripPh='fall';dripY=DY0-.1;dripV=0}}
+ else if(dripPh==='fall'){dripV+=18*dt;dripY-=dripV*dt;drop.position.y=dripY;drop.scale.set(.8,1.9,.8);
+  if(dripY<=RF+.05){dripPh='wait';dripT=2+Math.random()*3.5;drop.scale.set(0,0,0);if(AC)sfx.drip();const r=ripples[rip++%2];r.t=0}}
+ else{dripT-=dt;if(dripT<=0){dripPh='grow';dripT=0}}
+ ripples.forEach(r=>{if(r.t<2){r.t+=dt;const k=r.t/1.4;r.m.scale.setScalar(.15+k*1.2);r.m.material.opacity=Math.max(0,.55*(1-k))}else r.m.material.opacity=0});
+ gauge.children[1].rotation.z=Math.sin(tt*2.3)*.01;
+ // câmera
+ cx+=(mx*1.4-cx)*Math.min(1,dt*3);cy+=(-my*.7-cy)*Math.min(1,dt*3);bump*=Math.pow(.04,dt);
+ const d=cam.userData.d;cam.position.set(cx+(Math.random()-.5)*bump*.3,.5+cy+(Math.random()-.5)*bump*.3,d);cam.lookAt(0,-.4,0);
+ R.render(scene,cam)}
+requestAnimationFrame(frame);
+</script></body></html>
