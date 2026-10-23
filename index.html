@@ -162,61 +162,51 @@
     </div>
 
     <script>
+        // Mapeamento sincronizado exatamente com os ficheiros do repositório
         const rotas = {
-            "480": { arquivo: "480.pdf", nome: "Registro 480" },
-            "a ultima batalha": { arquivo: "A ultima batalha.pdf", nome: "A Última Batalha" },
-            "ultima batalha": { arquivo: "A ultima batalha.pdf", nome: "A Última Batalha" },
-            "agnes": { arquivo: "AGNES.pdf", nome: "Documento: Agnes" },
-            "agnes 2": { arquivo: "Agnes2.pdf", nome: "Documento: Agnes 2" },
-            "agnes2": { arquivo: "Agnes2.pdf", nome: "Documento: Agnes 2" },
-            "barganha": { arquivo: "BARGANHA.pdf", nome: "Documento: Barganha" },
-            "citala": { arquivo: "Cítala.html", nome: "Cítala (HTML)" },
-            "equilibrio": { arquivo: "EQUILIBRIO.pdf", nome: "Documento: Equilíbrio" },
-            "excallibur": { arquivo: "Excallibur.pdf", nome: "Excallibur" },
-            "excalibur": { arquivo: "Excallibur.pdf", nome: "Excallibur" },
-            "leonidas": { arquivo: "Leonidas.pdf", nome: "Leonidas" },
-            "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
-            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },
-            "o livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" },
-            "livro dos condenados": { arquivo: "O livro dos condenados.pdf", nome: "O Livro dos Condenados" },
-            "po de fantasma": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
-            "materiais": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },
-            "simonides": { arquivo: "Simónides.pdf", nome: "Simónides" },
-            "tubo de ensaio": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },
-            "tubo": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },
-            "caixa": { arquivo: "caixa.html", nome: "Caixa de Baralho" },
-            "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
-            "arthur": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
-            "rafael": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
-            "rafael dumas": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
-            "arthur kravinsk": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },
-            "o rei de camelot": { arquivo: "o rei de camelot.pdf", nome: "O Rei de Camelot" },
-            "rei de camelot": { arquivo: "o rei de camelot.pdf", nome: "O Rei de Camelot" },
-            "molon labe": { arquivo: "μολὼν λαβέ.pdf", nome: "Molon Labe" },
-            "molonlabe": { arquivo: "μολὼν λαβέ.pdf", nome: "Molon Labe" },
-            "a verdade": { arquivo: "A verdade.pdf", nome: "Documento: A Verdade" },
-            "verdade": { arquivo: "A verdade.pdf", nome: "Documento: A Verdade" },
-            "lamina da dicotomia": { arquivo: "LAMINA DA DICOTOMIA.pdf", nome: "Lâmina da Dicotomia" },
-            "lamina": { arquivo: "LAMINA DA DICOTOMIA.pdf", nome: "Lâmina da Dicotomia" },
-            "lilith": { arquivo: "Lilith.pdf", nome: "Documento: Lilith" },
-            "o selo": { arquivo: "selo.html", nome: "Documento: O Selo" },
-            "selo": { arquivo: "selo.html", nome: "Documento: O Selo" },
-            "quadros": { arquivo: "Quadros.html", nome: "Quadros" },
-            "pad simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },
-            "pad_simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },
-            "simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },
-            "sala manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },
-            "sala_manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },
-            "manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },
-            "pedras": { arquivo: "Pedras.html", nome: "Pedras" },
-
-            // Novos ficheiros adicionados
-            "seven haven": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },
-            "catalogo de cacadores": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },
-            "seven haven catalogo de cacadores": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },
-            "cacadores": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },
-            "tetris arcade": { arquivo: "Tetris Arcade.html", nome: "Tetris Arcade" },
-            "tetris": { arquivo: "Tetris Arcade.html", nome: "Tetris Arcade" }
+            "lamina da dicotomia": { arquivo: "LAMINA DA DICOTOMIA.pdf", nome: "Lâmina da Dicotomia" },[cite: 9]
+            "lamina": { arquivo: "LAMINA DA DICOTOMIA.pdf", nome: "Lâmina da Dicotomia" },[cite: 9]
+            
+            "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },[cite: 9]
+            "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },[cite: 9]
+            
+            "pad simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },[cite: 9]
+            "pad_simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },[cite: 9]
+            "simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },[cite: 9]
+            
+            "pedras": { arquivo: "Pedras.html", nome: "Pedras" },[cite: 9]
+            
+            "po de fantasma": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },[cite: 9]
+            "materiais": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },[cite: 9]
+            
+            "quadros": { arquivo: "Quadros.html", nome: "Quadros" },[cite: 9]
+            
+            "sala manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },[cite: 9]
+            "sala_manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },[cite: 9]
+            "manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },[cite: 9]
+            
+            "seven haven": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },[cite: 9]
+            "catalogo de cacadores": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },[cite: 9]
+            "cacadores": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },[cite: 9]
+            
+            "simonides": { arquivo: "Simónides.pdf", nome: "Simónides" },[cite: 9]
+            
+            "tetris arcade": { arquivo: "Tetris Arcade.html", nome: "Tetris Arcade" },[cite: 9]
+            "tetris": { arquivo: "Tetris Arcade.html", nome: "Tetris Arcade" },[cite: 9]
+            
+            "tubo de ensaio": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },[cite: 9]
+            "tubo": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },[cite: 9]
+            
+            "caixa": { arquivo: "caixa.html", nome: "Caixa de Baralho" },[cite: 9]
+            
+            "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
+            "arthur": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
+            "rafael": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
+            "rafael dumas": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
+            "arthur kravinsk": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
+            
+            "o selo": { arquivo: "selo.html", nome: "Documento: O Selo" },[cite: 9]
+            "selo": { arquivo: "selo.html", nome: "Documento: O Selo" }[cite: 9]
         };
 
         function normalizarTexto(texto) {
