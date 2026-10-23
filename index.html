@@ -165,146 +165,33 @@
         const rotas = {
             "lamina da dicotomia": { arquivo: "LAMINA DA DICOTOMIA.pdf", nome: "Lâmina da Dicotomia" },[cite: 9]
             "lamina": { arquivo: "LAMINA DA DICOTOMIA.pdf", nome: "Lâmina da Dicotomia" },[cite: 9]
-            
             "o baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },[cite: 9]
             "baralho do louco": { arquivo: "O Baralho do Louco.html", nome: "O Baralho do Louco" },[cite: 9]
-            
             "pad simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },[cite: 9]
             "pad_simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },[cite: 9]
             "simbolos": { arquivo: "Pad_Simbolos.html", nome: "Pad Símbolos" },[cite: 9]
-            
             "pedras": { arquivo: "Pedras.html", nome: "Pedras" },[cite: 9]
-            
             "po de fantasma": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },[cite: 9]
             "materiais": { arquivo: "Pó de Fantasma — Materiais.html", nome: "Pó de Fantasma - Materiais" },[cite: 9]
-            
             "quadros": { arquivo: "Quadros.html", nome: "Quadros" },[cite: 9]
-            
             "sala manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },[cite: 9]
             "sala_manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },[cite: 9]
             "manual": { arquivo: "Sala_Manual.html", nome: "Sala Manual" },[cite: 9]
-            
             "seven haven": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },[cite: 9]
             "catalogo de cacadores": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },[cite: 9]
             "cacadores": { arquivo: "Seven Haven — Catálogo de Caçadores.html", nome: "Seven Haven — Catálogo de Caçadores" },[cite: 9]
-            
             "simonides": { arquivo: "Simónides.pdf", nome: "Simónides" },[cite: 9]
-            
             "tetris arcade": { arquivo: "Tetris Arcade.html", nome: "Tetris Arcade" },[cite: 9]
             "tetris": { arquivo: "Tetris Arcade.html", nome: "Tetris Arcade" },[cite: 9]
-            
             "tubo de ensaio": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },[cite: 9]
             "tubo": { arquivo: "Tubo de Ensaio (3D).html", nome: "Tubo de Ensaio (3D)" },[cite: 9]
-            
             "caixa": { arquivo: "caixa.html", nome: "Caixa de Baralho" },[cite: 9]
-            
             "maxmiliam": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
             "arthur": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
             "rafael": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
             "rafael dumas": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
             "arthur kravinsk": { arquivo: "maxmiliam.pdf", nome: "Documento: Maxmiliam" },[cite: 9]
-            
             "o selo": { arquivo: "selo.html", nome: "Documento: O Selo" },[cite: 9]
             "selo": { arquivo: "selo.html", nome: "Documento: O Selo" },[cite: 9]
-
-            // Novo ficheiro adicionado
             "a parede giratoria": { arquivo: "A Parede Giratória.html", nome: "A Parede Giratória" },[cite: 10]
-            "parede giratoria": { arquivo: "A Parede Giratória.html", nome: "A Parede Giratória" },[cite: 10]
-            "parede": { arquivo: "A Parede Giratória.html", nome: "A Parede Giratória" }[cite: 10]
-        };
-
-        function normalizarTexto(texto) {
-            if (!texto) return "";
-            return texto
-                .toString()
-                .toLowerCase()
-                .normalize("NFD")
-                .replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9\s]/g, "")
-                .replace(/\s+/g, " ")
-                .trim();
-        }
-
-        function carregarAtalhos() {
-            try {
-                const listaAtalhosDiv = document.getElementById("listaAtalhos");
-                const secaoAtalhos = document.getElementById("secaoAtalhos");
-                if (!listaAtalhosDiv || !secaoAtalhos) return;
-
-                listaAtalhosDiv.innerHTML = "";
-                let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
-
-                if (Array.isArray(atalhosSalvos) && atalhosSalvos.length > 0) {
-                    secaoAtalhos.style.display = "block";
-                    let exibidos = [];
-
-                    atalhosSalvos.forEach(senhaKey => {
-                        if (rotas[senhaKey]) {
-                            const info = rotas[senhaKey];
-                            if (!exibidos.includes(info.nome)) {
-                                exibidos.push(info.nome);
-                                const btn = document.createElement("button");
-                                btn.className = "atalho-btn";
-                                btn.textContent = `📜 ${info.nome}`;
-                                btn.onclick = function() {
-                                    window.location.href = info.arquivo;
-                                };
-                                listaAtalhosDiv.appendChild(btn);
-                            }
-                        }
-                    });
-                } else {
-                    secaoAtalhos.style.display = "none";
-                }
-            } catch (e) {
-                console.error("Erro ao carregar atalhos:", e);
-            }
-        }
-
-        function tentarAcessar() {
-            const input = document.getElementById("senhaInput");
-            const erroDiv = document.getElementById("erro");
-            
-            if (!input) {
-                alert("Erro: Campo de senha não encontrado!");
-                return;
-            }
-
-            const senhaNormalizada = normalizarTexto(input.value);
-
-            if (rotas[senhaNormalizada]) {
-                erroDiv.textContent = "";
-                try {
-                    let atalhosSalvos = JSON.parse(localStorage.getItem("spn_atalhos_v2")) || [];
-                    if (!Array.isArray(atalhosSalvos)) atalhosSalvos = [];
-                    if (!atalhosSalvos.includes(senhaNormalizada)) {
-                        atalhosSalvos.push(senhaNormalizada);
-                        localStorage.setItem("spn_atalhos_v2", JSON.stringify(atalhosSalvos));
-                    }
-                } catch (e) {
-                    console.error("Erro no localStorage:", e);
-                }
-
-                window.location.href = rotas[senhaNormalizada].arquivo;
-            } else {
-                erroDiv.textContent = "Chave desconhecida: '" + senhaNormalizada + "'";
-            }
-        }
-
-        function limparHistorico() {
-            if (confirm("Tem certeza que deseja apagar os registros desbloqueados?")) {
-                localStorage.removeItem("spn_atalhos_v2");
-                carregarAtalhos();
-            }
-        }
-
-        document.getElementById("senhaInput").addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                tentarAcessar();
-            }
-        });
-
-        window.onload = carregarAtalhos;
-    </script>
-</body>
-</html>
+            "parede giratoria": { arquivo: "A Parede Giratória.html", nome: "A Parede Giratória" },
